@@ -23,6 +23,12 @@ const CopyIcon = ({ className = "w-4 h-4" }) => (
   </svg>
 );
 
+const WhatsAppIcon = ({ className = "w-4 h-4" }) => (
+  <svg className={className} fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 00-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+  </svg>
+);
+
 const TargetIcon = ({ className = "w-6 h-6" }) => (
   <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.05 2a9 9 0 0 1 8 7.94" />
@@ -153,6 +159,12 @@ export default function Home() {
   const getMapsLink = (b: ExtractedBusiness) => {
     const query = encodeURIComponent(`${b.title} ${b.city} ${b.street !== '—' ? b.street : ''}`.trim());
     return `https://www.google.com/maps/search/?api=1&query=${query}`;
+  };
+
+  const getWhatsAppLink = (phone: string) => {
+    // Remove all non-numeric characters (except leading + if it exists)
+    let cleanPhone = phone.replace(/[^\d+]/g, '');
+    return `https://wa.me/${cleanPhone}`;
   };
 
   const processFile = useCallback(async (file: File) => {
@@ -299,9 +311,9 @@ export default function Home() {
         <div className="absolute -bottom-[15%] -right-[10%] w-[500px] h-[500px] rounded-full bg-[radial-gradient(circle,rgba(0,212,170,0.05)_0%,transparent_70%)]" />
       </div>
 
-      <div className="relative z-10 min-h-screen px-4 md:px-6 w-full">
+      <div className="relative z-10 min-h-screen px-4 md:px-6 w-full max-w-7xl mx-auto">
         {/* Header */}
-        <header className="w-full mx-auto pt-8 md:pt-10 pb-6 md:pb-8 border-b border-gray-200 flex flex-col sm:flex-row items-start sm:items-center justify-between flex-wrap gap-4">
+        <header className="w-full pt-8 md:pt-10 pb-6 md:pb-8 border-b border-gray-200 flex flex-col sm:flex-row items-start sm:items-center justify-between flex-wrap gap-4">
           <div>
             <div className="flex items-center gap-3 mb-1.5">
               <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#6c63ff] to-[#00d4aa] flex items-center justify-center text-white shadow-md">
@@ -327,11 +339,11 @@ export default function Home() {
           )}
         </header>
 
-        <main className="w-full mx-auto py-8 md:py-9 pb-32 md:pb-20">
+        <main className="w-full py-8 md:py-9 pb-32 md:pb-20">
 
           {/* Upload Zone */}
           <section
-            className={`upload-zone${dragOver ? ' drag-over' : ''} p-8 md:p-12 text-center mb-9`}
+            className={`upload-zone${dragOver ? ' drag-over' : ''} max-w-3xl mx-auto p-10 md:p-14 text-center mb-10`}
             onDragOver={e => { e.preventDefault(); setDragOver(true); }}
             onDragLeave={() => setDragOver(false)}
             onDrop={handleDrop}
@@ -357,16 +369,16 @@ export default function Home() {
                 <h2 className="text-xl font-bold mb-2 text-gray-900">
                   {dragOver ? 'Drop to upload' : 'Upload your JSON file'}
                 </h2>
-                <p className="text-gray-500 text-sm mb-5">
+                <p className="text-gray-500 text-sm mb-6">
                   Drag & drop or click to browse — Google Places JSON format
                 </p>
                 <button
-                  className="btn-primary pointer-events-none text-sm px-7 py-2.5"
+                  className="btn-primary pointer-events-none text-sm px-8 py-3"
                 >
                   Choose File
                 </button>
                 {fileName && (
-                  <p className="mt-4 text-xs text-[#00a383] font-semibold tracking-wider">
+                  <p className="mt-5 text-xs text-[#00a383] font-semibold tracking-wider">
                     ✓ Last file: {fileName}
                   </p>
                 )}
@@ -376,17 +388,17 @@ export default function Home() {
 
           {/* Stats */}
           {stats && (
-            <section className="mb-8 animate-fade-in">
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            <section className="mb-10 animate-fade-in">
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5">
                 {[
                   { label: 'Total Records', value: stats.total, icon: '📊', color: 'text-gray-900' },
                   { label: 'Have Website', value: stats.withWebsite, icon: '🌐', color: 'text-gray-500' },
                   { label: 'No Website', value: stats.withoutWebsite, icon: '🚫', color: 'text-[#00a383]' },
                   { label: 'Filtered', value: filtered.length, icon: '🎯', color: 'text-[#6c63ff]' },
                 ].map(stat => (
-                  <div key={stat.label} className="stat-card px-4 md:px-6 py-5">
-                    <div className="flex items-center justify-between mb-2.5">
-                      <span className="text-xl md:text-[22px]">{stat.icon}</span>
+                  <div key={stat.label} className="stat-card px-5 md:px-6 py-6">
+                    <div className="flex items-center justify-between mb-3">
+                      <span className="text-[22px] md:text-2xl">{stat.icon}</span>
                       <span className="text-[10px] md:text-[11px] text-gray-400 font-semibold tracking-wider uppercase">
                         {stat.label}
                       </span>
@@ -395,14 +407,14 @@ export default function Home() {
                       {stat.value.toLocaleString()}
                     </div>
                     {stat.label !== 'Total Records' && (
-                      <div className="mt-2.5">
+                      <div className="mt-3">
                         <div className="progress-bar">
                           <div
                             className="progress-bar-fill"
                             style={{ width: `${Math.round((stat.value / stats.total) * 100)}%` }}
                           />
                         </div>
-                        <div className="text-[10px] md:text-[11px] text-gray-400 mt-1 text-right">
+                        <div className="text-[10px] md:text-[11px] text-gray-400 mt-1.5 text-right">
                           {Math.round((stat.value / stats.total) * 100)}%
                         </div>
                       </div>
@@ -415,11 +427,11 @@ export default function Home() {
 
           {/* Filters */}
           {extracted.length > 0 && (
-            <section className="flex gap-3 flex-wrap mb-6 items-center">
+            <section className="flex gap-3 flex-wrap mb-8 items-center bg-gray-50/50 p-3 rounded-xl border border-gray-100 shadow-sm">
               <div className="flex-1 min-w-[240px] relative">
                 <SearchIcon className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
                 <input
-                  className="search-input pl-11"
+                  className="search-input pl-11 !border-transparent !bg-white shadow-sm"
                   placeholder="Search by name, phone, city…"
                   value={search}
                   onChange={e => { setSearch(e.target.value); setPage(1); }}
@@ -427,7 +439,7 @@ export default function Home() {
               </div>
               <div className="flex-1 sm:flex-none w-full sm:w-[220px]">
                 <select
-                  className="search-input appearance-none cursor-pointer"
+                  className="search-input appearance-none cursor-pointer !border-transparent !bg-white shadow-sm"
                   value={categoryFilter}
                   onChange={e => { setCategoryFilter(e.target.value); setPage(1); }}
                 >
@@ -452,36 +464,36 @@ export default function Home() {
               
               <div className="px-1 py-4 flex items-center justify-between flex-wrap gap-2.5 mb-2">
                 <div className="flex items-center gap-3">
-                  <h3 className="text-[15px] font-bold text-gray-900">
+                  <h3 className="text-lg font-bold text-gray-900">
                     Businesses Without Website
                   </h3>
                   <span className="badge badge-no-website">
                     {filtered.length} leads
                   </span>
                 </div>
-                <div className="text-xs text-gray-500">
+                <div className="text-xs font-medium text-gray-500 bg-gray-100 px-3 py-1.5 rounded-md">
                   Page {page} of {totalPages || 1}
                 </div>
               </div>
 
               {paginated.length === 0 ? (
-                <div className="card text-center p-10 text-gray-500">
+                <div className="card text-center p-12 text-gray-500">
                   No results match your search
                 </div>
               ) : (
                 <>
                   {/* MOBILE CARDS VIEW */}
-                  <div className="grid grid-cols-1 gap-4 md:hidden">
+                  <div className="grid grid-cols-1 gap-5 md:hidden">
                     {paginated.map((b, i) => (
-                      <div key={i} className="card p-5 flex flex-col gap-3">
+                      <div key={i} className="card p-5 flex flex-col gap-3 border-gray-100">
                         <div className="flex justify-between items-start gap-2">
                           <h4 className="font-bold text-gray-900 text-lg leading-tight">{b.title}</h4>
-                          <span className="text-xs text-gray-400 font-medium bg-gray-100 px-2 py-1 rounded-md shrink-0">
+                          <span className="text-xs text-gray-400 font-medium bg-gray-50 px-2 py-1 rounded-md shrink-0">
                             #{((page - 1) * PER_PAGE) + i + 1}
                           </span>
                         </div>
                         
-                        <div className="text-sm text-gray-600 flex flex-col gap-1.5">
+                        <div className="text-[13px] text-gray-600 flex flex-col gap-1.5">
                           <div className="flex items-center gap-2">
                             <MapIcon className="w-4 h-4 text-gray-400 shrink-0" />
                             <span className="truncate">{b.street !== '—' ? b.street : ''} {b.city !== '—' ? b.city : 'No location'}</span>
@@ -493,81 +505,92 @@ export default function Home() {
                             {b.categories.slice(0, 3).map(c => (
                               <span key={c} className="badge badge-category !text-[10px]">{c}</span>
                             ))}
-                            {b.categories.length > 3 && <span className="text-xs text-gray-400">+{b.categories.length - 3}</span>}
+                            {b.categories.length > 3 && <span className="text-xs text-gray-400 font-medium">+{b.categories.length - 3}</span>}
                           </div>
                         )}
 
-                        <div className="h-px bg-gray-100 my-1" />
+                        <div className="h-px bg-gray-100 my-2" />
 
-                        {/* Mobile Fast Actions */}
-                        <div className="grid grid-cols-3 gap-2">
+                        {/* Mobile Fast Actions (2x2 Grid) */}
+                        <div className="grid grid-cols-2 gap-2">
                           <a
                             href={b.phone !== '—' ? `tel:${b.phone}` : '#'}
-                            className={`flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-sm font-semibold transition-colors ${
+                            className={`flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-sm font-semibold transition-colors ${
                               b.phone !== '—' ? 'bg-[#00d4aa]/10 text-[#00a383] hover:bg-[#00d4aa]/20' : 'bg-gray-50 text-gray-300 pointer-events-none'
                             }`}
                           >
                             <PhoneIcon className="w-4 h-4" /> Call
                           </a>
                           
-                          <button
-                            onClick={() => copyToClipboard(b.phone !== '—' ? b.phone : '', 'Phone')}
-                            disabled={b.phone === '—'}
-                            className="flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-sm font-semibold bg-gray-50 text-gray-600 hover:bg-gray-100 disabled:text-gray-300 disabled:pointer-events-none transition-colors"
+                          <a
+                            href={b.phone !== '—' ? getWhatsAppLink(b.phone) : '#'}
+                            target={b.phone !== '—' ? '_blank' : undefined}
+                            rel={b.phone !== '—' ? 'noopener noreferrer' : undefined}
+                            className={`flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-sm font-semibold transition-colors ${
+                              b.phone !== '—' ? 'bg-[#25D366]/10 text-[#25D366] hover:bg-[#25D366]/20' : 'bg-gray-50 text-gray-300 pointer-events-none'
+                            }`}
                           >
-                            <CopyIcon className="w-4 h-4" /> Copy
-                          </button>
-                          
+                            <WhatsAppIcon className="w-4 h-4" /> WhatsApp
+                          </a>
+
                           <a
                             href={getMapsLink(b)}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-sm font-semibold bg-[#6c63ff]/10 text-[#6c63ff] hover:bg-[#6c63ff]/20 transition-colors"
+                            className="flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-sm font-semibold bg-[#6c63ff]/10 text-[#6c63ff] hover:bg-[#6c63ff]/20 transition-colors"
                           >
                             <MapIcon className="w-4 h-4" /> Map
                           </a>
+
+                          <button
+                            onClick={() => copyToClipboard(b.phone !== '—' ? b.phone : '', 'Phone')}
+                            disabled={b.phone === '—'}
+                            className="flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-sm font-semibold bg-gray-50 text-gray-600 hover:bg-gray-100 disabled:text-gray-300 disabled:pointer-events-none transition-colors"
+                          >
+                            <CopyIcon className="w-4 h-4" /> Copy
+                          </button>
                         </div>
                       </div>
                     ))}
                   </div>
 
                   {/* DESKTOP TABLE VIEW */}
-                  <div className="card overflow-hidden hidden md:block">
+                  <div className="card overflow-hidden hidden md:block border-gray-200">
                     <div className="overflow-x-auto w-full">
                       <table className="data-table w-full">
                         <thead>
                           <tr>
-                            <th className="w-9 text-center">#</th>
-                            <th onClick={() => handleSort('title')} className="cursor-pointer select-none">
+                            <th className="w-12 text-center !py-4">#</th>
+                            <th onClick={() => handleSort('title')} className="cursor-pointer select-none !py-4 hover:bg-gray-100/50 transition-colors">
                               Business Name <SortIcon field="title" />
                             </th>
-                            <th onClick={() => handleSort('phone')} className="cursor-pointer select-none">
+                            <th onClick={() => handleSort('phone')} className="cursor-pointer select-none !py-4 hover:bg-gray-100/50 transition-colors">
                               Phone <SortIcon field="phone" />
                             </th>
-                            <th onClick={() => handleSort('categories')} className="cursor-pointer select-none">
+                            <th onClick={() => handleSort('categories')} className="cursor-pointer select-none !py-4 hover:bg-gray-100/50 transition-colors">
                               Categories <SortIcon field="categories" />
                             </th>
-                            <th onClick={() => handleSort('city')} className="cursor-pointer select-none">
+                            <th onClick={() => handleSort('city')} className="cursor-pointer select-none !py-4 hover:bg-gray-100/50 transition-colors">
                               Location <SortIcon field="city" />
                             </th>
-                            <th className="text-right">Actions</th>
+                            <th className="text-right !py-4">Actions</th>
                           </tr>
                         </thead>
                         <tbody>
                           {paginated.map((b, i) => (
-                            <tr key={i} className="animate-fade-in group hover:bg-gray-50">
-                              <td className="text-center text-gray-400 text-[11px] font-semibold">
+                            <tr key={i} className="animate-fade-in group hover:bg-gray-50 transition-colors">
+                              <td className="text-center text-gray-400 text-[12px] font-semibold !py-4 border-r border-gray-100/50">
                                 {(page - 1) * PER_PAGE + i + 1}
                               </td>
-                              <td>
-                                <div className="font-semibold text-gray-900 text-[13px]">
+                              <td className="!py-4">
+                                <div className="font-semibold text-gray-900 text-[14px]">
                                   {b.title}
                                 </div>
                               </td>
-                              <td>
+                              <td className="!py-4">
                                 {b.phone !== '—' ? (
                                   <div className="flex items-center gap-2">
-                                    <span className="font-medium text-gray-700">{b.phone}</span>
+                                    <span className="font-medium text-gray-700 text-[13px]">{b.phone}</span>
                                     <button onClick={() => copyToClipboard(b.phone, 'Phone')} className="text-gray-400 hover:text-[#6c63ff] transition-colors p-1" title="Copy Phone">
                                       <CopyIcon className="w-3.5 h-3.5" />
                                     </button>
@@ -576,7 +599,7 @@ export default function Home() {
                                   <span className="text-gray-400">—</span>
                                 )}
                               </td>
-                              <td>
+                              <td className="!py-4">
                                 <div className="flex flex-wrap gap-1 max-w-[200px]">
                                   {b.categories.length > 0
                                     ? b.categories.slice(0, 2).map(c => (
@@ -584,22 +607,27 @@ export default function Home() {
                                     ))
                                     : <span className="text-gray-400">—</span>
                                   }
-                                  {b.categories.length > 2 && <span className="text-xs text-gray-400 align-middle">+{b.categories.length - 2}</span>}
+                                  {b.categories.length > 2 && <span className="text-xs text-gray-400 align-middle font-medium">+{b.categories.length - 2}</span>}
                                 </div>
                               </td>
-                              <td className="max-w-[200px]">
-                                <div className="truncate text-[13px] text-gray-600">
+                              <td className="max-w-[200px] !py-4">
+                                <div className="truncate text-[13px] text-gray-600 font-medium">
                                   {b.street !== '—' ? `${b.street}, ` : ''}{b.city !== '—' ? b.city : '—'}
                                 </div>
                               </td>
-                              <td>
-                                <div className="flex items-center justify-end gap-2 opacity-50 group-hover:opacity-100 transition-opacity">
+                              <td className="!py-4">
+                                <div className="flex items-center justify-end gap-2 opacity-40 group-hover:opacity-100 transition-opacity">
                                   {b.phone !== '—' && (
-                                    <a href={`tel:${b.phone}`} className="p-2 text-[#00a383] bg-[#00d4aa]/10 hover:bg-[#00d4aa]/20 rounded-md transition-colors" title="Call">
-                                      <PhoneIcon className="w-4 h-4" />
-                                    </a>
+                                    <>
+                                      <a href={`tel:${b.phone}`} className="p-2 text-[#00a383] bg-[#00d4aa]/10 hover:bg-[#00d4aa]/20 rounded-md transition-colors shadow-sm" title="Call">
+                                        <PhoneIcon className="w-4 h-4" />
+                                      </a>
+                                      <a href={getWhatsAppLink(b.phone)} target="_blank" rel="noopener noreferrer" className="p-2 text-[#25D366] bg-[#25D366]/10 hover:bg-[#25D366]/20 rounded-md transition-colors shadow-sm" title="WhatsApp">
+                                        <WhatsAppIcon className="w-4 h-4" />
+                                      </a>
+                                    </>
                                   )}
-                                  <a href={getMapsLink(b)} target="_blank" rel="noopener noreferrer" className="p-2 text-[#6c63ff] bg-[#6c63ff]/10 hover:bg-[#6c63ff]/20 rounded-md transition-colors" title="View on Map">
+                                  <a href={getMapsLink(b)} target="_blank" rel="noopener noreferrer" className="p-2 text-[#6c63ff] bg-[#6c63ff]/10 hover:bg-[#6c63ff]/20 rounded-md transition-colors shadow-sm" title="View on Map">
                                     <MapIcon className="w-4 h-4" />
                                   </a>
                                 </div>
@@ -615,9 +643,9 @@ export default function Home() {
 
               {/* Pagination */}
               {totalPages > 1 && (
-                <div className="pt-6 flex items-center justify-center gap-2">
+                <div className="pt-8 flex items-center justify-center gap-2">
                   <button
-                    className="btn-secondary px-3.5 py-1.5 text-[13px] shadow-sm"
+                    className="btn-secondary px-4 py-2 text-[13px] shadow-sm font-medium"
                     onClick={() => setPage(p => Math.max(1, p - 1))}
                     disabled={page === 1}
                   >← Prev</button>
@@ -634,7 +662,7 @@ export default function Home() {
                       <button
                         key={pageNum}
                         onClick={() => setPage(pageNum)}
-                        className={`w-9 h-9 rounded-lg border flex items-center justify-center text-[13px] font-inter transition-all duration-200 cursor-pointer shadow-sm ${
+                        className={`w-10 h-10 rounded-xl border flex items-center justify-center text-[13px] font-inter transition-all duration-200 cursor-pointer shadow-sm ${
                           isCurrent 
                             ? 'border-[#6c63ff] bg-[#6c63ff] text-white font-bold' 
                             : 'border-gray-200 bg-white text-gray-600 font-medium hover:bg-gray-50'
@@ -646,7 +674,7 @@ export default function Home() {
                   })}
 
                   <button
-                    className="btn-secondary px-3.5 py-1.5 text-[13px] shadow-sm"
+                    className="btn-secondary px-4 py-2 text-[13px] shadow-sm font-medium"
                     onClick={() => setPage(p => Math.min(totalPages, p + 1))}
                     disabled={page === totalPages}
                   >Next →</button>
@@ -657,31 +685,31 @@ export default function Home() {
 
           {/* Empty state */}
           {!loading && extracted.length === 0 && !stats && (
-            <div className="text-center pt-16 pb-10 text-gray-500">
+            <div className="text-center pt-20 pb-16 text-gray-500">
               <div className="flex justify-center mb-6">
-                <div className="w-24 h-24 rounded-full bg-gray-100 flex items-center justify-center text-gray-300">
+                <div className="w-24 h-24 rounded-full bg-gray-50 border border-gray-100 shadow-sm flex items-center justify-center text-gray-300">
                   <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                   </svg>
                 </div>
               </div>
-              <p className="text-lg font-medium text-gray-900 mb-2">No Data Uploaded</p>
-              <p className="text-[14px]">Upload a JSON file of Google Places data to extract leads.</p>
+              <p className="text-xl font-bold text-gray-900 mb-2">No Data Uploaded</p>
+              <p className="text-[15px] max-w-md mx-auto">Upload a JSON file of Google Places data to instantly extract actionable leads.</p>
             </div>
           )}
 
           {/* Loaded but none without website */}
           {!loading && stats && extracted.length === 0 && (
-            <div className="text-center pt-16 pb-10">
+            <div className="text-center pt-20 pb-16">
               <div className="flex justify-center mb-6">
-                <div className="w-24 h-24 rounded-full bg-[#00d4aa]/10 flex items-center justify-center text-[#00a383]">
+                <div className="w-24 h-24 rounded-full bg-[#00d4aa]/10 border border-[#00d4aa]/20 shadow-sm flex items-center justify-center text-[#00a383]">
                   <TargetIcon className="w-10 h-10" />
                 </div>
               </div>
-              <p className="text-xl text-gray-900 font-bold mb-2">
+              <p className="text-2xl text-gray-900 font-bold mb-3">
                 All {stats.total} businesses have a website!
               </p>
-              <p className="text-[14px] text-gray-500">
+              <p className="text-[15px] text-gray-500 max-w-md mx-auto">
                 No leads without a website were found in this dataset. You can try uploading a different file.
               </p>
             </div>
@@ -692,16 +720,16 @@ export default function Home() {
 
       {/* Mobile Sticky Bottom Bar */}
       {extracted.length > 0 && (
-        <div className="fixed bottom-0 left-0 right-0 p-4 bg-white/90 backdrop-blur-md border-t border-gray-200 shadow-[0_-10px_15px_-3px_rgba(0,0,0,0.05)] flex items-center justify-between gap-3 z-50 md:hidden">
+        <div className="fixed bottom-0 left-0 right-0 p-4 bg-white/95 backdrop-blur-md border-t border-gray-200 shadow-[0_-10px_15px_-3px_rgba(0,0,0,0.05)] flex items-center justify-between gap-3 z-50 md:hidden">
           <div className="flex flex-col">
             <span className="text-xs text-gray-500 font-medium">Found Leads</span>
-            <span className="text-sm font-bold text-gray-900">{filtered.length}</span>
+            <span className="text-base font-extrabold text-gray-900">{filtered.length}</span>
           </div>
           <div className="flex gap-2">
-            <button className="btn-secondary px-4 py-2 flex items-center gap-2" onClick={exportJSON}>
+            <button className="btn-secondary px-4 py-2.5 flex items-center gap-2 font-semibold" onClick={exportJSON}>
               <DownloadIcon className="w-4 h-4" /> JSON
             </button>
-            <button className="btn-success px-4 py-2 flex items-center gap-2 shadow-lg shadow-[#00d4aa]/20" onClick={exportCSV}>
+            <button className="btn-success px-4 py-2.5 flex items-center gap-2 shadow-lg shadow-[#00d4aa]/20 font-bold" onClick={exportCSV}>
               <DownloadIcon className="w-4 h-4" /> CSV
             </button>
           </div>
