@@ -2,6 +2,49 @@
 
 import { useState, useCallback, useRef } from 'react';
 
+// ─── Icons ────────────────────────────────────────────────────────────────────
+
+const MapIcon = ({ className = "w-4 h-4" }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+  </svg>
+);
+
+const PhoneIcon = ({ className = "w-4 h-4" }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+  </svg>
+);
+
+const CopyIcon = ({ className = "w-4 h-4" }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+  </svg>
+);
+
+const TargetIcon = ({ className = "w-6 h-6" }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.05 2a9 9 0 0 1 8 7.94" />
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5.53 21c-2.02-1.3-3.35-3.52-3.48-6.1" />
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.47 21c2.02-1.3 3.35-3.52 3.48-6.1" />
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.06 9.94A9 9 0 0 1 10 2" />
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 12m-3 0a3 3 0 1 0 6 0 3 3 0 1 0-6 0" />
+  </svg>
+);
+
+const DownloadIcon = ({ className = "w-4 h-4" }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+  </svg>
+);
+
+const SearchIcon = ({ className = "w-4 h-4" }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+  </svg>
+);
+
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 interface BusinessRecord {
@@ -61,11 +104,11 @@ function Toast({ toasts, remove }: { toasts: ToastMsg[]; remove: (id: number) =>
   return (
     <div className="fixed top-6 right-6 z-[9999] flex flex-col gap-2.5">
       {toasts.map(t => (
-        <div key={t.id} className="toast cursor-pointer bg-white border border-gray-200 rounded-xl px-5 py-3.5 flex items-center gap-2.5 shadow-xl animate-slide-up" onClick={() => remove(t.id)}>
-          <span className="text-lg">
+        <div key={t.id} className="toast cursor-pointer bg-white border border-gray-200 rounded-xl px-5 py-3.5 flex items-center gap-3 shadow-xl animate-slide-up" onClick={() => remove(t.id)}>
+          <span className="text-xl">
             {t.type === 'success' ? '✅' : t.type === 'error' ? '❌' : 'ℹ️'}
           </span>
-          <span className="text-[13px] text-gray-800 font-medium">{t.message}</span>
+          <span className="text-[14px] text-gray-800 font-medium">{t.message}</span>
         </div>
       ))}
     </div>
@@ -98,6 +141,19 @@ export default function Home() {
   };
 
   const removeToast = (id: number) => setToasts(prev => prev.filter(t => t.id !== id));
+
+  const copyToClipboard = (text: string, label: string = 'Text') => {
+    navigator.clipboard.writeText(text).then(() => {
+      addToast(`${label} copied!`, 'success');
+    }).catch(() => {
+      addToast(`Failed to copy ${label}`, 'error');
+    });
+  };
+
+  const getMapsLink = (b: ExtractedBusiness) => {
+    const query = encodeURIComponent(`${b.title} ${b.city} ${b.street !== '—' ? b.street : ''}`.trim());
+    return `https://www.google.com/maps/search/?api=1&query=${query}`;
+  };
 
   const processFile = useCallback(async (file: File) => {
     if (!file.name.endsWith('.json')) {
@@ -132,7 +188,7 @@ export default function Home() {
 
       setExtracted(result);
       setStats({ total, withWebsite, withoutWebsite, filtered: result.length });
-      addToast(`Found ${result.length} businesses without a website`, 'success');
+      addToast(`Found ${result.length} leads without a website`, 'success');
     } catch {
       addToast('Failed to parse JSON — make sure the file is valid', 'error');
     } finally {
@@ -243,13 +299,15 @@ export default function Home() {
         <div className="absolute -bottom-[15%] -right-[10%] w-[500px] h-[500px] rounded-full bg-[radial-gradient(circle,rgba(0,212,170,0.05)_0%,transparent_70%)]" />
       </div>
 
-      <div className="relative z-10 min-h-screen px-6 w-full">
+      <div className="relative z-10 min-h-screen px-4 md:px-6 w-full">
         {/* Header */}
-        <header className="w-full mx-auto pt-10 pb-8 border-b border-gray-200 flex items-center justify-between flex-wrap gap-4">
+        <header className="w-full mx-auto pt-8 md:pt-10 pb-6 md:pb-8 border-b border-gray-200 flex flex-col sm:flex-row items-start sm:items-center justify-between flex-wrap gap-4">
           <div>
             <div className="flex items-center gap-3 mb-1.5">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#6c63ff] to-[#00d4aa] flex items-center justify-center text-xl shadow-md">🎯</div>
-              <h1 className="text-[26px] font-extrabold tracking-tight">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#6c63ff] to-[#00d4aa] flex items-center justify-center text-white shadow-md">
+                <TargetIcon />
+              </div>
+              <h1 className="text-2xl md:text-[26px] font-extrabold tracking-tight">
                 <span className="bg-gradient-to-br from-[#6c63ff] to-[#00a383] bg-clip-text text-transparent">Lead Extractor</span>
               </h1>
             </div>
@@ -258,22 +316,22 @@ export default function Home() {
             </p>
           </div>
           {extracted.length > 0 && (
-            <div className="flex gap-2.5 flex-wrap">
-              <button className="btn-secondary" onClick={exportJSON}>
-                ⬇️ Export JSON
+            <div className="hidden md:flex gap-2.5 flex-wrap">
+              <button className="btn-secondary flex items-center gap-2" onClick={exportJSON}>
+                <DownloadIcon className="w-4 h-4" /> JSON
               </button>
-              <button className="btn-success" onClick={exportCSV}>
-                📋 Export CSV
+              <button className="btn-success flex items-center gap-2" onClick={exportCSV}>
+                <DownloadIcon className="w-4 h-4" /> CSV
               </button>
             </div>
           )}
         </header>
 
-        <main className="w-full mx-auto py-9 pb-20">
+        <main className="w-full mx-auto py-8 md:py-9 pb-32 md:pb-20">
 
           {/* Upload Zone */}
           <section
-            className={`upload-zone${dragOver ? ' drag-over' : ''} p-12 text-center mb-9`}
+            className={`upload-zone${dragOver ? ' drag-over' : ''} p-8 md:p-12 text-center mb-9`}
             onDragOver={e => { e.preventDefault(); setDragOver(true); }}
             onDragLeave={() => setDragOver(false)}
             onDrop={handleDrop}
@@ -319,21 +377,21 @@ export default function Home() {
           {/* Stats */}
           {stats && (
             <section className="mb-8 animate-fade-in">
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                 {[
                   { label: 'Total Records', value: stats.total, icon: '📊', color: 'text-gray-900' },
                   { label: 'Have Website', value: stats.withWebsite, icon: '🌐', color: 'text-gray-500' },
                   { label: 'No Website', value: stats.withoutWebsite, icon: '🚫', color: 'text-[#00a383]' },
-                  { label: 'Showing (filtered)', value: filtered.length, icon: '🎯', color: 'text-[#6c63ff]' },
+                  { label: 'Filtered', value: filtered.length, icon: '🎯', color: 'text-[#6c63ff]' },
                 ].map(stat => (
-                  <div key={stat.label} className="stat-card">
+                  <div key={stat.label} className="stat-card px-4 md:px-6 py-5">
                     <div className="flex items-center justify-between mb-2.5">
-                      <span className="text-[22px]">{stat.icon}</span>
-                      <span className="text-[11px] text-gray-400 font-semibold tracking-wider uppercase">
+                      <span className="text-xl md:text-[22px]">{stat.icon}</span>
+                      <span className="text-[10px] md:text-[11px] text-gray-400 font-semibold tracking-wider uppercase">
                         {stat.label}
                       </span>
                     </div>
-                    <div className={`text-[32px] font-extrabold tracking-tight ${stat.color}`}>
+                    <div className={`text-2xl md:text-[32px] font-extrabold tracking-tight ${stat.color}`}>
                       {stat.value.toLocaleString()}
                     </div>
                     {stat.label !== 'Total Records' && (
@@ -344,7 +402,7 @@ export default function Home() {
                             style={{ width: `${Math.round((stat.value / stats.total) * 100)}%` }}
                           />
                         </div>
-                        <div className="text-[11px] text-gray-400 mt-1 text-right">
+                        <div className="text-[10px] md:text-[11px] text-gray-400 mt-1 text-right">
                           {Math.round((stat.value / stats.total) * 100)}%
                         </div>
                       </div>
@@ -358,15 +416,16 @@ export default function Home() {
           {/* Filters */}
           {extracted.length > 0 && (
             <section className="flex gap-3 flex-wrap mb-6 items-center">
-              <div className="flex-1 min-w-[280px]">
+              <div className="flex-1 min-w-[240px] relative">
+                <SearchIcon className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
                 <input
-                  className="search-input"
-                  placeholder="🔍  Search by name, phone, city…"
+                  className="search-input pl-11"
+                  placeholder="Search by name, phone, city…"
                   value={search}
                   onChange={e => { setSearch(e.target.value); setPage(1); }}
                 />
               </div>
-              <div className="flex-none w-[220px]">
+              <div className="flex-1 sm:flex-none w-full sm:w-[220px]">
                 <select
                   className="search-input appearance-none cursor-pointer"
                   value={categoryFilter}
@@ -379,7 +438,7 @@ export default function Home() {
                 </select>
               </div>
               {(search || categoryFilter) && (
-                <button className="btn-secondary whitespace-nowrap text-[13px]"
+                <button className="btn-secondary whitespace-nowrap text-[13px] w-full sm:w-auto"
                   onClick={() => { setSearch(''); setCategoryFilter(''); setPage(1); }}>
                   ✕ Clear filters
                 </button>
@@ -387,10 +446,11 @@ export default function Home() {
             </section>
           )}
 
-          {/* Results Table */}
+          {/* Results Area */}
           {extracted.length > 0 && (
-            <section className="card overflow-hidden animate-fade-in w-full">
-              <div className="px-5 py-4 border-b border-gray-200 flex items-center justify-between flex-wrap gap-2.5">
+            <section className="animate-fade-in w-full">
+              
+              <div className="px-1 py-4 flex items-center justify-between flex-wrap gap-2.5 mb-2">
                 <div className="flex items-center gap-3">
                   <h3 className="text-[15px] font-bold text-gray-900">
                     Businesses Without Website
@@ -404,106 +464,180 @@ export default function Home() {
                 </div>
               </div>
 
-              <div className="overflow-x-auto w-full">
-                <table className="data-table w-full">
-                  <thead>
-                    <tr>
-                      <th className="w-9 text-center">#</th>
-                      {(
-                        [
-                          { key: 'title', label: 'Business Name' },
-                          { key: 'phone', label: 'Phone' },
-                          { key: 'categories', label: 'Categories' },
-                          { key: 'street', label: 'Street' },
-                          { key: 'city', label: 'City' },
-                        ] as { key: keyof ExtractedBusiness; label: string }[]
-                      ).map(col => (
-                        <th
-                          key={col.key}
-                          onClick={() => handleSort(col.key)}
-                          className="cursor-pointer select-none"
-                        >
-                          {col.label} <SortIcon field={col.key} />
-                        </th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {paginated.length === 0 ? (
-                      <tr>
-                        <td colSpan={6} className="text-center p-10 text-gray-500">
-                          No results match your search
-                        </td>
-                      </tr>
-                    ) : (
-                      paginated.map((b, i) => (
-                        <tr key={i} className="animate-fade-in">
-                          <td className="text-center text-gray-400 text-[11px] font-semibold">
-                            {(page - 1) * PER_PAGE + i + 1}
-                          </td>
-                          <td>
-                            <div className="font-semibold text-gray-900 text-[13px]">
-                              {b.title}
-                            </div>
-                          </td>
-                          <td>
-                            {b.phone !== '—' ? (
-                              <a
-                                href={`tel:${b.phone}`}
-                                className="text-[#00a383] no-underline font-medium hover:underline"
-                              >
-                                📞 {b.phone}
-                              </a>
-                            ) : (
-                              <span className="text-gray-400">—</span>
-                            )}
-                          </td>
-                          <td>
-                            <div className="flex flex-wrap gap-1">
-                              {b.categories.length > 0
-                                ? b.categories.map(c => (
-                                  <span key={c} className="badge badge-category">{c}</span>
-                                ))
-                                : <span className="text-gray-400">—</span>
-                              }
-                            </div>
-                          </td>
-                          <td className="max-w-[220px]">
-                            {b.street !== '—' ? b.street : <span className="text-gray-400">—</span>}
-                          </td>
-                          <td>{b.city !== '—' ? b.city : <span className="text-gray-400">—</span>}</td>
-                        </tr>
-                      ))
-                    )}
-                  </tbody>
-                </table>
-              </div>
+              {paginated.length === 0 ? (
+                <div className="card text-center p-10 text-gray-500">
+                  No results match your search
+                </div>
+              ) : (
+                <>
+                  {/* MOBILE CARDS VIEW */}
+                  <div className="grid grid-cols-1 gap-4 md:hidden">
+                    {paginated.map((b, i) => (
+                      <div key={i} className="card p-5 flex flex-col gap-3">
+                        <div className="flex justify-between items-start gap-2">
+                          <h4 className="font-bold text-gray-900 text-lg leading-tight">{b.title}</h4>
+                          <span className="text-xs text-gray-400 font-medium bg-gray-100 px-2 py-1 rounded-md shrink-0">
+                            #{((page - 1) * PER_PAGE) + i + 1}
+                          </span>
+                        </div>
+                        
+                        <div className="text-sm text-gray-600 flex flex-col gap-1.5">
+                          <div className="flex items-center gap-2">
+                            <MapIcon className="w-4 h-4 text-gray-400 shrink-0" />
+                            <span className="truncate">{b.street !== '—' ? b.street : ''} {b.city !== '—' ? b.city : 'No location'}</span>
+                          </div>
+                        </div>
+
+                        {b.categories.length > 0 && (
+                          <div className="flex flex-wrap gap-1.5 mt-1">
+                            {b.categories.slice(0, 3).map(c => (
+                              <span key={c} className="badge badge-category !text-[10px]">{c}</span>
+                            ))}
+                            {b.categories.length > 3 && <span className="text-xs text-gray-400">+{b.categories.length - 3}</span>}
+                          </div>
+                        )}
+
+                        <div className="h-px bg-gray-100 my-1" />
+
+                        {/* Mobile Fast Actions */}
+                        <div className="grid grid-cols-3 gap-2">
+                          <a
+                            href={b.phone !== '—' ? `tel:${b.phone}` : '#'}
+                            className={`flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-sm font-semibold transition-colors ${
+                              b.phone !== '—' ? 'bg-[#00d4aa]/10 text-[#00a383] hover:bg-[#00d4aa]/20' : 'bg-gray-50 text-gray-300 pointer-events-none'
+                            }`}
+                          >
+                            <PhoneIcon className="w-4 h-4" /> Call
+                          </a>
+                          
+                          <button
+                            onClick={() => copyToClipboard(b.phone !== '—' ? b.phone : '', 'Phone')}
+                            disabled={b.phone === '—'}
+                            className="flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-sm font-semibold bg-gray-50 text-gray-600 hover:bg-gray-100 disabled:text-gray-300 disabled:pointer-events-none transition-colors"
+                          >
+                            <CopyIcon className="w-4 h-4" /> Copy
+                          </button>
+                          
+                          <a
+                            href={getMapsLink(b)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-sm font-semibold bg-[#6c63ff]/10 text-[#6c63ff] hover:bg-[#6c63ff]/20 transition-colors"
+                          >
+                            <MapIcon className="w-4 h-4" /> Map
+                          </a>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* DESKTOP TABLE VIEW */}
+                  <div className="card overflow-hidden hidden md:block">
+                    <div className="overflow-x-auto w-full">
+                      <table className="data-table w-full">
+                        <thead>
+                          <tr>
+                            <th className="w-9 text-center">#</th>
+                            <th onClick={() => handleSort('title')} className="cursor-pointer select-none">
+                              Business Name <SortIcon field="title" />
+                            </th>
+                            <th onClick={() => handleSort('phone')} className="cursor-pointer select-none">
+                              Phone <SortIcon field="phone" />
+                            </th>
+                            <th onClick={() => handleSort('categories')} className="cursor-pointer select-none">
+                              Categories <SortIcon field="categories" />
+                            </th>
+                            <th onClick={() => handleSort('city')} className="cursor-pointer select-none">
+                              Location <SortIcon field="city" />
+                            </th>
+                            <th className="text-right">Actions</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {paginated.map((b, i) => (
+                            <tr key={i} className="animate-fade-in group hover:bg-gray-50">
+                              <td className="text-center text-gray-400 text-[11px] font-semibold">
+                                {(page - 1) * PER_PAGE + i + 1}
+                              </td>
+                              <td>
+                                <div className="font-semibold text-gray-900 text-[13px]">
+                                  {b.title}
+                                </div>
+                              </td>
+                              <td>
+                                {b.phone !== '—' ? (
+                                  <div className="flex items-center gap-2">
+                                    <span className="font-medium text-gray-700">{b.phone}</span>
+                                    <button onClick={() => copyToClipboard(b.phone, 'Phone')} className="text-gray-400 hover:text-[#6c63ff] transition-colors p-1" title="Copy Phone">
+                                      <CopyIcon className="w-3.5 h-3.5" />
+                                    </button>
+                                  </div>
+                                ) : (
+                                  <span className="text-gray-400">—</span>
+                                )}
+                              </td>
+                              <td>
+                                <div className="flex flex-wrap gap-1 max-w-[200px]">
+                                  {b.categories.length > 0
+                                    ? b.categories.slice(0, 2).map(c => (
+                                      <span key={c} className="badge badge-category">{c}</span>
+                                    ))
+                                    : <span className="text-gray-400">—</span>
+                                  }
+                                  {b.categories.length > 2 && <span className="text-xs text-gray-400 align-middle">+{b.categories.length - 2}</span>}
+                                </div>
+                              </td>
+                              <td className="max-w-[200px]">
+                                <div className="truncate text-[13px] text-gray-600">
+                                  {b.street !== '—' ? `${b.street}, ` : ''}{b.city !== '—' ? b.city : '—'}
+                                </div>
+                              </td>
+                              <td>
+                                <div className="flex items-center justify-end gap-2 opacity-50 group-hover:opacity-100 transition-opacity">
+                                  {b.phone !== '—' && (
+                                    <a href={`tel:${b.phone}`} className="p-2 text-[#00a383] bg-[#00d4aa]/10 hover:bg-[#00d4aa]/20 rounded-md transition-colors" title="Call">
+                                      <PhoneIcon className="w-4 h-4" />
+                                    </a>
+                                  )}
+                                  <a href={getMapsLink(b)} target="_blank" rel="noopener noreferrer" className="p-2 text-[#6c63ff] bg-[#6c63ff]/10 hover:bg-[#6c63ff]/20 rounded-md transition-colors" title="View on Map">
+                                    <MapIcon className="w-4 h-4" />
+                                  </a>
+                                </div>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </>
+              )}
 
               {/* Pagination */}
               {totalPages > 1 && (
-                <div className="p-4 border-t border-gray-200 flex items-center justify-center gap-2">
+                <div className="pt-6 flex items-center justify-center gap-2">
                   <button
-                    className="btn-secondary px-3.5 py-1.5 text-[13px]"
+                    className="btn-secondary px-3.5 py-1.5 text-[13px] shadow-sm"
                     onClick={() => setPage(p => Math.max(1, p - 1))}
                     disabled={page === 1}
                   >← Prev</button>
 
-                  {Array.from({ length: Math.min(7, totalPages) }, (_, i) => {
+                  {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
                     let pageNum: number;
-                    if (totalPages <= 7) pageNum = i + 1;
-                    else if (page <= 4) pageNum = i + 1;
-                    else if (page >= totalPages - 3) pageNum = totalPages - 6 + i;
-                    else pageNum = page - 3 + i;
+                    if (totalPages <= 5) pageNum = i + 1;
+                    else if (page <= 3) pageNum = i + 1;
+                    else if (page >= totalPages - 2) pageNum = totalPages - 4 + i;
+                    else pageNum = page - 2 + i;
                     
                     const isCurrent = pageNum === page;
                     return (
                       <button
                         key={pageNum}
                         onClick={() => setPage(pageNum)}
-                        className={`w-9 h-9 rounded-lg border flex items-center justify-center text-[13px] font-inter transition-all duration-200 cursor-pointer ${
+                        className={`w-9 h-9 rounded-lg border flex items-center justify-center text-[13px] font-inter transition-all duration-200 cursor-pointer shadow-sm ${
                           isCurrent 
-                            ? 'border-[#6c63ff] bg-[#6c63ff]/10 text-[#6c63ff] font-bold' 
-                            : 'border-gray-200 bg-white text-gray-500 font-normal hover:bg-gray-50'
+                            ? 'border-[#6c63ff] bg-[#6c63ff] text-white font-bold' 
+                            : 'border-gray-200 bg-white text-gray-600 font-medium hover:bg-gray-50'
                         }`}
                       >
                         {pageNum}
@@ -512,7 +646,7 @@ export default function Home() {
                   })}
 
                   <button
-                    className="btn-secondary px-3.5 py-1.5 text-[13px]"
+                    className="btn-secondary px-3.5 py-1.5 text-[13px] shadow-sm"
                     onClick={() => setPage(p => Math.min(totalPages, p + 1))}
                     disabled={page === totalPages}
                   >Next →</button>
@@ -523,28 +657,56 @@ export default function Home() {
 
           {/* Empty state */}
           {!loading && extracted.length === 0 && !stats && (
-            <div className="text-center pt-10 text-gray-500">
-              <div className="text-[60px] mb-4 opacity-50">🗂️</div>
-              <p className="text-[15px]">Upload a JSON file to get started</p>
-              <p className="text-[13px] mt-1.5">Supports Google Places dataset format</p>
+            <div className="text-center pt-16 pb-10 text-gray-500">
+              <div className="flex justify-center mb-6">
+                <div className="w-24 h-24 rounded-full bg-gray-100 flex items-center justify-center text-gray-300">
+                  <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                </div>
+              </div>
+              <p className="text-lg font-medium text-gray-900 mb-2">No Data Uploaded</p>
+              <p className="text-[14px]">Upload a JSON file of Google Places data to extract leads.</p>
             </div>
           )}
 
           {/* Loaded but none without website */}
           {!loading && stats && extracted.length === 0 && (
-            <div className="text-center pt-10">
-              <div className="text-[60px] mb-4">🎉</div>
-              <p className="text-base text-[#00a383] font-semibold">
+            <div className="text-center pt-16 pb-10">
+              <div className="flex justify-center mb-6">
+                <div className="w-24 h-24 rounded-full bg-[#00d4aa]/10 flex items-center justify-center text-[#00a383]">
+                  <TargetIcon className="w-10 h-10" />
+                </div>
+              </div>
+              <p className="text-xl text-gray-900 font-bold mb-2">
                 All {stats.total} businesses have a website!
               </p>
-              <p className="text-[13px] text-gray-500 mt-1.5">
-                No leads without a website were found in this dataset.
+              <p className="text-[14px] text-gray-500">
+                No leads without a website were found in this dataset. You can try uploading a different file.
               </p>
             </div>
           )}
 
         </main>
       </div>
+
+      {/* Mobile Sticky Bottom Bar */}
+      {extracted.length > 0 && (
+        <div className="fixed bottom-0 left-0 right-0 p-4 bg-white/90 backdrop-blur-md border-t border-gray-200 shadow-[0_-10px_15px_-3px_rgba(0,0,0,0.05)] flex items-center justify-between gap-3 z-50 md:hidden">
+          <div className="flex flex-col">
+            <span className="text-xs text-gray-500 font-medium">Found Leads</span>
+            <span className="text-sm font-bold text-gray-900">{filtered.length}</span>
+          </div>
+          <div className="flex gap-2">
+            <button className="btn-secondary px-4 py-2 flex items-center gap-2" onClick={exportJSON}>
+              <DownloadIcon className="w-4 h-4" /> JSON
+            </button>
+            <button className="btn-success px-4 py-2 flex items-center gap-2 shadow-lg shadow-[#00d4aa]/20" onClick={exportCSV}>
+              <DownloadIcon className="w-4 h-4" /> CSV
+            </button>
+          </div>
+        </div>
+      )}
     </>
   );
 }
