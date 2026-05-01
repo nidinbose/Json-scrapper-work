@@ -110,11 +110,11 @@ function Toast({ toasts, remove }: { toasts: ToastMsg[]; remove: (id: number) =>
   return (
     <div className="fixed top-6 right-6 z-[9999] flex flex-col gap-2.5">
       {toasts.map(t => (
-        <div key={t.id} className="toast cursor-pointer bg-white border border-gray-200 rounded-xl px-5 py-3.5 flex items-center gap-3 shadow-xl animate-slide-up" onClick={() => remove(t.id)}>
+        <div key={t.id} className="toast cursor-pointer bg-white border border-black/10 rounded-xl px-5 py-3.5 flex items-center gap-3 shadow-2xl animate-slide-up" onClick={() => remove(t.id)}>
           <span className="text-xl">
             {t.type === 'success' ? '✅' : t.type === 'error' ? '❌' : 'ℹ️'}
           </span>
-          <span className="text-[14px] text-gray-800 font-medium">{t.message}</span>
+          <span className="text-[14px] text-black font-semibold tracking-tight">{t.message}</span>
         </div>
       ))}
     </div>
@@ -306,33 +306,34 @@ export default function Home() {
       <Toast toasts={toasts} remove={removeToast} />
 
       {/* Background blobs */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
+      <div className="fixed inset-0 overflow-hidden pointer-events-none z-0 bg-white">
         <div className="absolute -top-[20%] -left-[10%] w-[600px] h-[600px] rounded-full bg-[radial-gradient(circle,rgba(108,99,255,0.06)_0%,transparent_70%)]" />
         <div className="absolute -bottom-[15%] -right-[10%] w-[500px] h-[500px] rounded-full bg-[radial-gradient(circle,rgba(0,212,170,0.05)_0%,transparent_70%)]" />
       </div>
 
-      <div className="relative z-10 min-h-screen px-4 md:px-6 w-full max-w-7xl mx-auto">
+      {/* Full screen wrapper */}
+      <div className="relative z-10 min-h-screen px-4 md:px-8 lg:px-12 w-full bg-transparent text-black">
         {/* Header */}
-        <header className="w-full pt-8 md:pt-10 pb-6 md:pb-8 border-b border-gray-200 flex flex-col sm:flex-row items-start sm:items-center justify-between flex-wrap gap-4">
+        <header className="w-full pt-8 md:pt-10 pb-6 md:pb-8 border-b border-black/10 flex flex-col sm:flex-row items-start sm:items-center justify-between flex-wrap gap-4">
           <div>
             <div className="flex items-center gap-3 mb-1.5">
               <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#6c63ff] to-[#00d4aa] flex items-center justify-center text-white shadow-md">
                 <TargetIcon />
               </div>
-              <h1 className="text-2xl md:text-[26px] font-extrabold tracking-tight">
+              <h1 className="text-2xl md:text-[26px] font-extrabold tracking-tight text-black">
                 <span className="bg-gradient-to-br from-[#6c63ff] to-[#00a383] bg-clip-text text-transparent">Lead Extractor</span>
               </h1>
             </div>
             <p className="text-sm text-gray-500 ml-[52px]">
-              Extract businesses with <strong className="text-[#00a383]">no website</strong> from Google Places data
+              Extract businesses with <strong className="text-black">no website</strong> from Google Places data
             </p>
           </div>
           {extracted.length > 0 && (
             <div className="hidden md:flex gap-2.5 flex-wrap">
-              <button className="btn-secondary flex items-center gap-2" onClick={exportJSON}>
+              <button className="btn-secondary flex items-center gap-2 border-black/10 hover:border-black/30 hover:bg-black/5 text-black" onClick={exportJSON}>
                 <DownloadIcon className="w-4 h-4" /> JSON
               </button>
-              <button className="btn-success flex items-center gap-2" onClick={exportCSV}>
+              <button className="btn-success flex items-center gap-2 shadow-lg shadow-[#00d4aa]/20" onClick={exportCSV}>
                 <DownloadIcon className="w-4 h-4" /> CSV
               </button>
             </div>
@@ -343,7 +344,7 @@ export default function Home() {
 
           {/* Upload Zone */}
           <section
-            className={`upload-zone${dragOver ? ' drag-over' : ''} max-w-3xl mx-auto p-10 md:p-14 text-center mb-10`}
+            className={`upload-zone${dragOver ? ' drag-over' : ''} w-full p-10 md:p-14 text-center mb-10 bg-white shadow-sm border-black/10`}
             onDragOver={e => { e.preventDefault(); setDragOver(true); }}
             onDragLeave={() => setDragOver(false)}
             onDrop={handleDrop}
@@ -358,27 +359,27 @@ export default function Home() {
             />
             {loading ? (
               <div className="flex flex-col items-center gap-4">
-                <div className="spinner w-9 h-9 border-[3px] border-t-[#6c63ff] border-gray-200" />
-                <p className="text-gray-500 text-[15px]">Processing your file…</p>
+                <div className="spinner w-9 h-9 border-[3px] border-t-black border-black/10" />
+                <p className="text-black font-medium text-[15px]">Processing your file…</p>
               </div>
             ) : (
               <>
                 <div className="text-[52px] mb-4">
                   {dragOver ? '📂' : '📁'}
                 </div>
-                <h2 className="text-xl font-bold mb-2 text-gray-900">
+                <h2 className="text-2xl font-bold mb-2 text-black">
                   {dragOver ? 'Drop to upload' : 'Upload your JSON file'}
                 </h2>
                 <p className="text-gray-500 text-sm mb-6">
                   Drag & drop or click to browse — Google Places JSON format
                 </p>
                 <button
-                  className="btn-primary pointer-events-none text-sm px-8 py-3"
+                  className="btn-primary pointer-events-none text-sm px-8 py-3 bg-black text-white hover:bg-gray-800 shadow-xl shadow-black/10"
                 >
                   Choose File
                 </button>
                 {fileName && (
-                  <p className="mt-5 text-xs text-[#00a383] font-semibold tracking-wider">
+                  <p className="mt-5 text-xs text-black font-semibold tracking-wider">
                     ✓ Last file: {fileName}
                   </p>
                 )}
@@ -389,17 +390,17 @@ export default function Home() {
           {/* Stats */}
           {stats && (
             <section className="mb-10 animate-fade-in">
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5">
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5 w-full">
                 {[
-                  { label: 'Total Records', value: stats.total, icon: '📊', color: 'text-gray-900' },
+                  { label: 'Total Records', value: stats.total, icon: '📊', color: 'text-black' },
                   { label: 'Have Website', value: stats.withWebsite, icon: '🌐', color: 'text-gray-500' },
                   { label: 'No Website', value: stats.withoutWebsite, icon: '🚫', color: 'text-[#00a383]' },
                   { label: 'Filtered', value: filtered.length, icon: '🎯', color: 'text-[#6c63ff]' },
                 ].map(stat => (
-                  <div key={stat.label} className="stat-card px-5 md:px-6 py-6">
+                  <div key={stat.label} className="stat-card px-5 md:px-6 py-6 border-black/10 bg-white shadow-sm hover:shadow-md transition-shadow">
                     <div className="flex items-center justify-between mb-3">
                       <span className="text-[22px] md:text-2xl">{stat.icon}</span>
-                      <span className="text-[10px] md:text-[11px] text-gray-400 font-semibold tracking-wider uppercase">
+                      <span className="text-[10px] md:text-[11px] text-gray-500 font-bold tracking-wider uppercase">
                         {stat.label}
                       </span>
                     </div>
@@ -408,13 +409,13 @@ export default function Home() {
                     </div>
                     {stat.label !== 'Total Records' && (
                       <div className="mt-3">
-                        <div className="progress-bar">
+                        <div className="progress-bar bg-gray-100">
                           <div
                             className="progress-bar-fill"
                             style={{ width: `${Math.round((stat.value / stats.total) * 100)}%` }}
                           />
                         </div>
-                        <div className="text-[10px] md:text-[11px] text-gray-400 mt-1.5 text-right">
+                        <div className="text-[10px] md:text-[11px] text-gray-500 mt-1.5 text-right font-medium">
                           {Math.round((stat.value / stats.total) * 100)}%
                         </div>
                       </div>
@@ -427,11 +428,11 @@ export default function Home() {
 
           {/* Filters */}
           {extracted.length > 0 && (
-            <section className="flex gap-3 flex-wrap mb-8 items-center bg-gray-50/50 p-3 rounded-xl border border-gray-100 shadow-sm">
+            <section className="flex gap-3 flex-wrap mb-8 items-center bg-gray-50 p-4 rounded-xl border border-black/5 shadow-sm w-full">
               <div className="flex-1 min-w-[240px] relative">
                 <SearchIcon className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
                 <input
-                  className="search-input pl-11 !border-transparent !bg-white shadow-sm"
+                  className="search-input pl-11 !border-black/10 !bg-white shadow-sm text-black placeholder-gray-400 focus:!border-black focus:!ring-1 focus:!ring-black"
                   placeholder="Search by name, phone, city…"
                   value={search}
                   onChange={e => { setSearch(e.target.value); setPage(1); }}
@@ -439,7 +440,7 @@ export default function Home() {
               </div>
               <div className="flex-1 sm:flex-none w-full sm:w-[220px]">
                 <select
-                  className="search-input appearance-none cursor-pointer !border-transparent !bg-white shadow-sm"
+                  className="search-input appearance-none cursor-pointer !border-black/10 !bg-white shadow-sm text-black focus:!border-black focus:!ring-1 focus:!ring-black"
                   value={categoryFilter}
                   onChange={e => { setCategoryFilter(e.target.value); setPage(1); }}
                 >
@@ -450,7 +451,7 @@ export default function Home() {
                 </select>
               </div>
               {(search || categoryFilter) && (
-                <button className="btn-secondary whitespace-nowrap text-[13px] w-full sm:w-auto"
+                <button className="btn-secondary whitespace-nowrap text-[13px] w-full sm:w-auto border-black/10 text-black hover:bg-black/5"
                   onClick={() => { setSearch(''); setCategoryFilter(''); setPage(1); }}>
                   ✕ Clear filters
                 </button>
@@ -464,38 +465,38 @@ export default function Home() {
               
               <div className="px-1 py-4 flex items-center justify-between flex-wrap gap-2.5 mb-2">
                 <div className="flex items-center gap-3">
-                  <h3 className="text-lg font-bold text-gray-900">
+                  <h3 className="text-lg font-bold text-black">
                     Businesses Without Website
                   </h3>
-                  <span className="badge badge-no-website">
+                  <span className="badge badge-no-website bg-[#00a383]/10 text-[#00a383] border-[#00a383]/20">
                     {filtered.length} leads
                   </span>
                 </div>
-                <div className="text-xs font-medium text-gray-500 bg-gray-100 px-3 py-1.5 rounded-md">
+                <div className="text-xs font-bold text-black bg-gray-100 px-3 py-1.5 rounded-md">
                   Page {page} of {totalPages || 1}
                 </div>
               </div>
 
               {paginated.length === 0 ? (
-                <div className="card text-center p-12 text-gray-500">
+                <div className="card text-center p-12 text-black font-medium border-black/10 shadow-sm">
                   No results match your search
                 </div>
               ) : (
                 <>
                   {/* MOBILE CARDS VIEW */}
-                  <div className="grid grid-cols-1 gap-5 md:hidden">
+                  <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 md:hidden">
                     {paginated.map((b, i) => (
-                      <div key={i} className="card p-5 flex flex-col gap-3 border-gray-100">
+                      <div key={i} className="card p-5 flex flex-col gap-3 border-black/10 shadow-sm bg-white">
                         <div className="flex justify-between items-start gap-2">
-                          <h4 className="font-bold text-gray-900 text-lg leading-tight">{b.title}</h4>
-                          <span className="text-xs text-gray-400 font-medium bg-gray-50 px-2 py-1 rounded-md shrink-0">
+                          <h4 className="font-bold text-black text-lg leading-tight">{b.title}</h4>
+                          <span className="text-xs text-black font-bold bg-gray-100 px-2 py-1 rounded-md shrink-0">
                             #{((page - 1) * PER_PAGE) + i + 1}
                           </span>
                         </div>
                         
                         <div className="text-[13px] text-gray-600 flex flex-col gap-1.5">
-                          <div className="flex items-center gap-2">
-                            <MapIcon className="w-4 h-4 text-gray-400 shrink-0" />
+                          <div className="flex items-center gap-2 font-medium">
+                            <MapIcon className="w-4 h-4 text-black shrink-0" />
                             <span className="truncate">{b.street !== '—' ? b.street : ''} {b.city !== '—' ? b.city : 'No location'}</span>
                           </div>
                         </div>
@@ -503,20 +504,20 @@ export default function Home() {
                         {b.categories.length > 0 && (
                           <div className="flex flex-wrap gap-1.5 mt-1">
                             {b.categories.slice(0, 3).map(c => (
-                              <span key={c} className="badge badge-category !text-[10px]">{c}</span>
+                              <span key={c} className="badge badge-category bg-black/5 text-black border-black/10 !text-[10px]">{c}</span>
                             ))}
-                            {b.categories.length > 3 && <span className="text-xs text-gray-400 font-medium">+{b.categories.length - 3}</span>}
+                            {b.categories.length > 3 && <span className="text-xs text-gray-500 font-bold">+{b.categories.length - 3}</span>}
                           </div>
                         )}
 
-                        <div className="h-px bg-gray-100 my-2" />
+                        <div className="h-px bg-black/5 my-2" />
 
                         {/* Mobile Fast Actions (2x2 Grid) */}
                         <div className="grid grid-cols-2 gap-2">
                           <a
                             href={b.phone !== '—' ? `tel:${b.phone}` : '#'}
-                            className={`flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-sm font-semibold transition-colors ${
-                              b.phone !== '—' ? 'bg-[#00d4aa]/10 text-[#00a383] hover:bg-[#00d4aa]/20' : 'bg-gray-50 text-gray-300 pointer-events-none'
+                            className={`flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-sm font-bold transition-colors ${
+                              b.phone !== '—' ? 'bg-black text-white hover:bg-gray-800' : 'bg-gray-100 text-gray-400 pointer-events-none'
                             }`}
                           >
                             <PhoneIcon className="w-4 h-4" /> Call
@@ -526,8 +527,8 @@ export default function Home() {
                             href={b.phone !== '—' ? getWhatsAppLink(b.phone) : '#'}
                             target={b.phone !== '—' ? '_blank' : undefined}
                             rel={b.phone !== '—' ? 'noopener noreferrer' : undefined}
-                            className={`flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-sm font-semibold transition-colors ${
-                              b.phone !== '—' ? 'bg-[#25D366]/10 text-[#25D366] hover:bg-[#25D366]/20' : 'bg-gray-50 text-gray-300 pointer-events-none'
+                            className={`flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-sm font-bold transition-colors ${
+                              b.phone !== '—' ? 'bg-[#25D366] text-white hover:bg-[#20bd5a]' : 'bg-gray-100 text-gray-400 pointer-events-none'
                             }`}
                           >
                             <WhatsAppIcon className="w-4 h-4" /> WhatsApp
@@ -537,7 +538,7 @@ export default function Home() {
                             href={getMapsLink(b)}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-sm font-semibold bg-[#6c63ff]/10 text-[#6c63ff] hover:bg-[#6c63ff]/20 transition-colors"
+                            className="flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-sm font-bold bg-white border border-black/10 text-black hover:bg-gray-50 transition-colors"
                           >
                             <MapIcon className="w-4 h-4" /> Map
                           </a>
@@ -545,7 +546,7 @@ export default function Home() {
                           <button
                             onClick={() => copyToClipboard(b.phone !== '—' ? b.phone : '', 'Phone')}
                             disabled={b.phone === '—'}
-                            className="flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-sm font-semibold bg-gray-50 text-gray-600 hover:bg-gray-100 disabled:text-gray-300 disabled:pointer-events-none transition-colors"
+                            className="flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-sm font-bold bg-white border border-black/10 text-black hover:bg-gray-50 disabled:bg-gray-50 disabled:text-gray-400 disabled:pointer-events-none transition-colors"
                           >
                             <CopyIcon className="w-4 h-4" /> Copy
                           </button>
@@ -555,79 +556,79 @@ export default function Home() {
                   </div>
 
                   {/* DESKTOP TABLE VIEW */}
-                  <div className="card overflow-hidden hidden md:block border-gray-200">
+                  <div className="card overflow-hidden hidden md:block border-black/10 shadow-sm bg-white w-full">
                     <div className="overflow-x-auto w-full">
-                      <table className="data-table w-full">
+                      <table className="data-table w-full text-left">
                         <thead>
-                          <tr>
-                            <th className="w-12 text-center !py-4">#</th>
-                            <th onClick={() => handleSort('title')} className="cursor-pointer select-none !py-4 hover:bg-gray-100/50 transition-colors">
+                          <tr className="bg-gray-50/80">
+                            <th className="w-12 text-center !py-4 text-black font-bold border-b border-black/10 bg-transparent">#</th>
+                            <th onClick={() => handleSort('title')} className="cursor-pointer select-none !py-4 hover:bg-black/5 transition-colors text-black font-bold border-b border-black/10 bg-transparent">
                               Business Name <SortIcon field="title" />
                             </th>
-                            <th onClick={() => handleSort('phone')} className="cursor-pointer select-none !py-4 hover:bg-gray-100/50 transition-colors">
+                            <th onClick={() => handleSort('phone')} className="cursor-pointer select-none !py-4 hover:bg-black/5 transition-colors text-black font-bold border-b border-black/10 bg-transparent">
                               Phone <SortIcon field="phone" />
                             </th>
-                            <th onClick={() => handleSort('categories')} className="cursor-pointer select-none !py-4 hover:bg-gray-100/50 transition-colors">
+                            <th onClick={() => handleSort('categories')} className="cursor-pointer select-none !py-4 hover:bg-black/5 transition-colors text-black font-bold border-b border-black/10 bg-transparent">
                               Categories <SortIcon field="categories" />
                             </th>
-                            <th onClick={() => handleSort('city')} className="cursor-pointer select-none !py-4 hover:bg-gray-100/50 transition-colors">
+                            <th onClick={() => handleSort('city')} className="cursor-pointer select-none !py-4 hover:bg-black/5 transition-colors text-black font-bold border-b border-black/10 bg-transparent">
                               Location <SortIcon field="city" />
                             </th>
-                            <th className="text-right !py-4">Actions</th>
+                            <th className="text-right !py-4 text-black font-bold border-b border-black/10 bg-transparent">Actions</th>
                           </tr>
                         </thead>
                         <tbody>
                           {paginated.map((b, i) => (
                             <tr key={i} className="animate-fade-in group hover:bg-gray-50 transition-colors">
-                              <td className="text-center text-gray-400 text-[12px] font-semibold !py-4 border-r border-gray-100/50">
+                              <td className="text-center text-gray-500 text-[12px] font-bold !py-4 border-r border-black/5 border-b border-black/5">
                                 {(page - 1) * PER_PAGE + i + 1}
                               </td>
-                              <td className="!py-4">
-                                <div className="font-semibold text-gray-900 text-[14px]">
+                              <td className="!py-4 border-b border-black/5">
+                                <div className="font-bold text-black text-[14px]">
                                   {b.title}
                                 </div>
                               </td>
-                              <td className="!py-4">
+                              <td className="!py-4 border-b border-black/5">
                                 {b.phone !== '—' ? (
                                   <div className="flex items-center gap-2">
-                                    <span className="font-medium text-gray-700 text-[13px]">{b.phone}</span>
-                                    <button onClick={() => copyToClipboard(b.phone, 'Phone')} className="text-gray-400 hover:text-[#6c63ff] transition-colors p-1" title="Copy Phone">
+                                    <span className="font-semibold text-black text-[13px]">{b.phone}</span>
+                                    <button onClick={() => copyToClipboard(b.phone, 'Phone')} className="text-gray-400 hover:text-black transition-colors p-1" title="Copy Phone">
                                       <CopyIcon className="w-3.5 h-3.5" />
                                     </button>
                                   </div>
                                 ) : (
-                                  <span className="text-gray-400">—</span>
+                                  <span className="text-gray-300 font-bold">—</span>
                                 )}
                               </td>
-                              <td className="!py-4">
+                              <td className="!py-4 border-b border-black/5">
                                 <div className="flex flex-wrap gap-1 max-w-[200px]">
                                   {b.categories.length > 0
                                     ? b.categories.slice(0, 2).map(c => (
-                                      <span key={c} className="badge badge-category">{c}</span>
+                                      <span key={c} className="badge badge-category bg-black/5 text-black border-black/10">{c}</span>
                                     ))
-                                    : <span className="text-gray-400">—</span>
+                                    : <span className="text-gray-300 font-bold">—</span>
                                   }
-                                  {b.categories.length > 2 && <span className="text-xs text-gray-400 align-middle font-medium">+{b.categories.length - 2}</span>}
+                                  {b.categories.length > 2 && <span className="text-xs text-black align-middle font-bold">+{b.categories.length - 2}</span>}
                                 </div>
                               </td>
-                              <td className="max-w-[200px] !py-4">
+                              <td className="max-w-[200px] !py-4 border-b border-black/5">
                                 <div className="truncate text-[13px] text-gray-600 font-medium">
                                   {b.street !== '—' ? `${b.street}, ` : ''}{b.city !== '—' ? b.city : '—'}
                                 </div>
                               </td>
-                              <td className="!py-4">
-                                <div className="flex items-center justify-end gap-2 opacity-40 group-hover:opacity-100 transition-opacity">
+                              <td className="!py-4 border-b border-black/5">
+                                <div className="flex items-center justify-end gap-2 opacity-50 group-hover:opacity-100 transition-opacity">
                                   {b.phone !== '—' && (
                                     <>
-                                      <a href={`tel:${b.phone}`} className="p-2 text-[#00a383] bg-[#00d4aa]/10 hover:bg-[#00d4aa]/20 rounded-md transition-colors shadow-sm" title="Call">
+                                      <a href={`tel:${b.phone}`} className="p-2 text-white bg-black hover:bg-gray-800 rounded-md transition-colors shadow-sm" title="Call">
                                         <PhoneIcon className="w-4 h-4" />
                                       </a>
-                                      <a href={getWhatsAppLink(b.phone)} target="_blank" rel="noopener noreferrer" className="p-2 text-[#25D366] bg-[#25D366]/10 hover:bg-[#25D366]/20 rounded-md transition-colors shadow-sm" title="WhatsApp">
+                                      <a href={getWhatsAppLink(b.phone)} target="_blank" rel="noopener noreferrer" className="p-2 text-white bg-[#25D366] hover:bg-[#20bd5a] rounded-md transition-colors shadow-sm" title="WhatsApp">
                                         <WhatsAppIcon className="w-4 h-4" />
                                       </a>
                                     </>
                                   )}
-                                  <a href={getMapsLink(b)} target="_blank" rel="noopener noreferrer" className="p-2 text-[#6c63ff] bg-[#6c63ff]/10 hover:bg-[#6c63ff]/20 rounded-md transition-colors shadow-sm" title="View on Map">
+                                  <a href={getMapsLink(b)} target="_blank" rel="noopener noreferrer" className="p-2 text-black bg-white border border-black/10 hover:bg-gray-50 rounded-md transition-colors shadow-sm" title="View on Map">
                                     <MapIcon className="w-4 h-4" />
                                   </a>
                                 </div>
@@ -643,9 +644,9 @@ export default function Home() {
 
               {/* Pagination */}
               {totalPages > 1 && (
-                <div className="pt-8 flex items-center justify-center gap-2">
+                <div className="pt-8 flex items-center justify-center gap-2 w-full">
                   <button
-                    className="btn-secondary px-4 py-2 text-[13px] shadow-sm font-medium"
+                    className="btn-secondary px-4 py-2 text-[13px] shadow-sm font-bold border-black/10 text-black hover:bg-black/5"
                     onClick={() => setPage(p => Math.max(1, p - 1))}
                     disabled={page === 1}
                   >← Prev</button>
@@ -664,8 +665,8 @@ export default function Home() {
                         onClick={() => setPage(pageNum)}
                         className={`w-10 h-10 rounded-xl border flex items-center justify-center text-[13px] font-inter transition-all duration-200 cursor-pointer shadow-sm ${
                           isCurrent 
-                            ? 'border-[#6c63ff] bg-[#6c63ff] text-white font-bold' 
-                            : 'border-gray-200 bg-white text-gray-600 font-medium hover:bg-gray-50'
+                            ? 'border-black bg-black text-white font-extrabold' 
+                            : 'border-black/10 bg-white text-black font-bold hover:bg-gray-50'
                         }`}
                       >
                         {pageNum}
@@ -674,7 +675,7 @@ export default function Home() {
                   })}
 
                   <button
-                    className="btn-secondary px-4 py-2 text-[13px] shadow-sm font-medium"
+                    className="btn-secondary px-4 py-2 text-[13px] shadow-sm font-bold border-black/10 text-black hover:bg-black/5"
                     onClick={() => setPage(p => Math.min(totalPages, p + 1))}
                     disabled={page === totalPages}
                   >Next →</button>
@@ -685,31 +686,31 @@ export default function Home() {
 
           {/* Empty state */}
           {!loading && extracted.length === 0 && !stats && (
-            <div className="text-center pt-20 pb-16 text-gray-500">
+            <div className="text-center pt-20 pb-16 text-black w-full">
               <div className="flex justify-center mb-6">
-                <div className="w-24 h-24 rounded-full bg-gray-50 border border-gray-100 shadow-sm flex items-center justify-center text-gray-300">
+                <div className="w-24 h-24 rounded-full bg-white border border-black/10 shadow-sm flex items-center justify-center text-black">
                   <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                   </svg>
                 </div>
               </div>
-              <p className="text-xl font-bold text-gray-900 mb-2">No Data Uploaded</p>
-              <p className="text-[15px] max-w-md mx-auto">Upload a JSON file of Google Places data to instantly extract actionable leads.</p>
+              <p className="text-xl font-extrabold text-black mb-2">No Data Uploaded</p>
+              <p className="text-[15px] font-medium text-gray-500 max-w-md mx-auto">Upload a JSON file of Google Places data to instantly extract actionable leads.</p>
             </div>
           )}
 
           {/* Loaded but none without website */}
           {!loading && stats && extracted.length === 0 && (
-            <div className="text-center pt-20 pb-16">
+            <div className="text-center pt-20 pb-16 w-full">
               <div className="flex justify-center mb-6">
-                <div className="w-24 h-24 rounded-full bg-[#00d4aa]/10 border border-[#00d4aa]/20 shadow-sm flex items-center justify-center text-[#00a383]">
+                <div className="w-24 h-24 rounded-full bg-black/5 border border-black/10 shadow-sm flex items-center justify-center text-black">
                   <TargetIcon className="w-10 h-10" />
                 </div>
               </div>
-              <p className="text-2xl text-gray-900 font-bold mb-3">
+              <p className="text-2xl text-black font-extrabold mb-3">
                 All {stats.total} businesses have a website!
               </p>
-              <p className="text-[15px] text-gray-500 max-w-md mx-auto">
+              <p className="text-[15px] text-gray-500 font-medium max-w-md mx-auto">
                 No leads without a website were found in this dataset. You can try uploading a different file.
               </p>
             </div>
@@ -720,16 +721,16 @@ export default function Home() {
 
       {/* Mobile Sticky Bottom Bar */}
       {extracted.length > 0 && (
-        <div className="fixed bottom-0 left-0 right-0 p-4 bg-white/95 backdrop-blur-md border-t border-gray-200 shadow-[0_-10px_15px_-3px_rgba(0,0,0,0.05)] flex items-center justify-between gap-3 z-50 md:hidden">
+        <div className="fixed bottom-0 left-0 right-0 p-4 bg-white/95 backdrop-blur-md border-t border-black/10 shadow-[0_-10px_15px_-3px_rgba(0,0,0,0.05)] flex items-center justify-between gap-3 z-50 md:hidden">
           <div className="flex flex-col">
-            <span className="text-xs text-gray-500 font-medium">Found Leads</span>
-            <span className="text-base font-extrabold text-gray-900">{filtered.length}</span>
+            <span className="text-xs text-gray-500 font-bold uppercase tracking-wider">Found Leads</span>
+            <span className="text-base font-extrabold text-black">{filtered.length}</span>
           </div>
           <div className="flex gap-2">
-            <button className="btn-secondary px-4 py-2.5 flex items-center gap-2 font-semibold" onClick={exportJSON}>
+            <button className="btn-secondary px-4 py-2.5 flex items-center gap-2 font-bold border-black/10 text-black bg-white shadow-sm" onClick={exportJSON}>
               <DownloadIcon className="w-4 h-4" /> JSON
             </button>
-            <button className="btn-success px-4 py-2.5 flex items-center gap-2 shadow-lg shadow-[#00d4aa]/20 font-bold" onClick={exportCSV}>
+            <button className="btn-success px-4 py-2.5 flex items-center gap-2 shadow-md shadow-black/20 font-bold bg-black text-white" onClick={exportCSV}>
               <DownloadIcon className="w-4 h-4" /> CSV
             </button>
           </div>
