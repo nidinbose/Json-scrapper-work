@@ -59,13 +59,13 @@ interface ToastMsg { id: number; message: string; type: 'success' | 'error' | 'i
 
 function Toast({ toasts, remove }: { toasts: ToastMsg[]; remove: (id: number) => void }) {
   return (
-    <div style={{ position: 'fixed', top: 24, right: 24, zIndex: 9999, display: 'flex', flexDirection: 'column', gap: 10 }}>
+    <div className="fixed top-6 right-6 z-[9999] flex flex-col gap-2.5">
       {toasts.map(t => (
-        <div key={t.id} className="toast" onClick={() => remove(t.id)} style={{ cursor: 'pointer' }}>
-          <span style={{ fontSize: 18 }}>
+        <div key={t.id} className="toast cursor-pointer bg-white border border-gray-200 rounded-xl px-5 py-3.5 flex items-center gap-2.5 shadow-xl animate-slide-up" onClick={() => remove(t.id)}>
+          <span className="text-lg">
             {t.type === 'success' ? '✅' : t.type === 'error' ? '❌' : 'ℹ️'}
           </span>
-          <span style={{ fontSize: 13, color: 'var(--text-primary)', fontWeight: 500 }}>{t.message}</span>
+          <span className="text-[13px] text-gray-800 font-medium">{t.message}</span>
         </div>
       ))}
     </div>
@@ -187,8 +187,8 @@ export default function Home() {
   };
 
   const SortIcon = ({ field }: { field: keyof ExtractedBusiness }) => {
-    if (sortField !== field) return <span style={{ opacity: 0.3 }}>↕</span>;
-    return <span style={{ color: 'var(--accent-2)' }}>{sortAsc ? '↑' : '↓'}</span>;
+    if (sortField !== field) return <span className="opacity-30">↕</span>;
+    return <span className="text-[#00d4aa]">{sortAsc ? '↑' : '↓'}</span>;
   };
 
   // Export CSV
@@ -238,47 +238,27 @@ export default function Home() {
       <Toast toasts={toasts} remove={removeToast} />
 
       {/* Background blobs */}
-      <div style={{
-        position: 'fixed', inset: 0, overflow: 'hidden', pointerEvents: 'none', zIndex: 0,
-      }}>
-        <div style={{
-          position: 'absolute', top: '-20%', left: '-10%', width: 600, height: 600,
-          borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(108,99,255,0.12) 0%, transparent 70%)',
-        }} />
-        <div style={{
-          position: 'absolute', bottom: '-15%', right: '-10%', width: 500, height: 500,
-          borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(0,212,170,0.1) 0%, transparent 70%)',
-        }} />
+      <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
+        <div className="absolute -top-[20%] -left-[10%] w-[600px] h-[600px] rounded-full bg-[radial-gradient(circle,rgba(108,99,255,0.06)_0%,transparent_70%)]" />
+        <div className="absolute -bottom-[15%] -right-[10%] w-[500px] h-[500px] rounded-full bg-[radial-gradient(circle,rgba(0,212,170,0.05)_0%,transparent_70%)]" />
       </div>
 
-      <div style={{ position: 'relative', zIndex: 1, minHeight: '100vh', padding: '0 24px' }}>
+      <div className="relative z-10 min-h-screen px-6 w-full">
         {/* Header */}
-        <header style={{
-          maxWidth: 1200, margin: '0 auto', paddingTop: 40, paddingBottom: 32,
-          borderBottom: '1px solid var(--border)',
-          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-          flexWrap: 'wrap', gap: 16,
-        }}>
+        <header className="w-full mx-auto pt-10 pb-8 border-b border-gray-200 flex items-center justify-between flex-wrap gap-4">
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 6 }}>
-              <div style={{
-                width: 40, height: 40, borderRadius: 12,
-                background: 'linear-gradient(135deg, var(--accent), var(--accent-2))',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontSize: 20,
-              }}>🎯</div>
-              <h1 style={{ fontSize: 26, fontWeight: 800, letterSpacing: '-0.02em' }}>
-                <span className="gradient-text">Lead Extractor</span>
+            <div className="flex items-center gap-3 mb-1.5">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#6c63ff] to-[#00d4aa] flex items-center justify-center text-xl shadow-md">🎯</div>
+              <h1 className="text-[26px] font-extrabold tracking-tight">
+                <span className="bg-gradient-to-br from-[#6c63ff] to-[#00a383] bg-clip-text text-transparent">Lead Extractor</span>
               </h1>
             </div>
-            <p style={{ fontSize: 14, color: 'var(--text-secondary)', marginLeft: 52 }}>
-              Extract businesses with <strong style={{ color: 'var(--accent-2)' }}>no website</strong> from Google Places data
+            <p className="text-sm text-gray-500 ml-[52px]">
+              Extract businesses with <strong className="text-[#00a383]">no website</strong> from Google Places data
             </p>
           </div>
           {extracted.length > 0 && (
-            <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+            <div className="flex gap-2.5 flex-wrap">
               <button className="btn-secondary" onClick={exportJSON}>
                 ⬇️ Export JSON
               </button>
@@ -289,12 +269,11 @@ export default function Home() {
           )}
         </header>
 
-        <main style={{ maxWidth: 1200, margin: '0 auto', padding: '36px 0 80px' }}>
+        <main className="w-full mx-auto py-9 pb-20">
 
           {/* Upload Zone */}
           <section
-            className={`upload-zone${dragOver ? ' drag-over' : ''}`}
-            style={{ padding: '52px 40px', textAlign: 'center', marginBottom: 36 }}
+            className={`upload-zone${dragOver ? ' drag-over' : ''} p-12 text-center mb-9`}
             onDragOver={e => { e.preventDefault(); setDragOver(true); }}
             onDragLeave={() => setDragOver(false)}
             onDrop={handleDrop}
@@ -304,36 +283,32 @@ export default function Home() {
               ref={fileInputRef}
               type="file"
               accept=".json"
-              style={{ display: 'none' }}
+              className="hidden"
               onChange={handleFileInput}
             />
             {loading ? (
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
-                <div className="spinner" style={{ width: 36, height: 36, borderWidth: 3 }} />
-                <p style={{ color: 'var(--text-secondary)', fontSize: 15 }}>Processing your file…</p>
+              <div className="flex flex-col items-center gap-4">
+                <div className="spinner w-9 h-9 border-[3px] border-t-[#6c63ff] border-gray-200" />
+                <p className="text-gray-500 text-[15px]">Processing your file…</p>
               </div>
             ) : (
               <>
-                <div style={{ fontSize: 52, marginBottom: 16 }}>
+                <div className="text-[52px] mb-4">
                   {dragOver ? '📂' : '📁'}
                 </div>
-                <h2 style={{ fontSize: 20, fontWeight: 700, marginBottom: 8 }}>
+                <h2 className="text-xl font-bold mb-2 text-gray-900">
                   {dragOver ? 'Drop to upload' : 'Upload your JSON file'}
                 </h2>
-                <p style={{ color: 'var(--text-secondary)', fontSize: 14, marginBottom: 20 }}>
+                <p className="text-gray-500 text-sm mb-5">
                   Drag & drop or click to browse — Google Places JSON format
                 </p>
                 <button
-                  className="btn-primary"
-                  style={{ pointerEvents: 'none', fontSize: 14, padding: '10px 28px' }}
+                  className="btn-primary pointer-events-none text-sm px-7 py-2.5"
                 >
                   Choose File
                 </button>
                 {fileName && (
-                  <p style={{
-                    marginTop: 16, fontSize: 12, color: 'var(--accent-2)',
-                    fontWeight: 600, letterSpacing: '0.04em',
-                  }}>
+                  <p className="mt-4 text-xs text-[#00a383] font-semibold tracking-wider">
                     ✓ Last file: {fileName}
                   </p>
                 )}
@@ -343,37 +318,33 @@ export default function Home() {
 
           {/* Stats */}
           {stats && (
-            <section style={{ marginBottom: 32, animation: 'fadeIn 0.4s ease' }}>
-              <div style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
-                gap: 16,
-              }}>
+            <section className="mb-8 animate-fade-in">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 {[
-                  { label: 'Total Records', value: stats.total, icon: '📊', color: 'var(--text-primary)' },
-                  { label: 'Have Website', value: stats.withWebsite, icon: '🌐', color: '#9090b0' },
-                  { label: 'No Website', value: stats.withoutWebsite, icon: '🚫', color: 'var(--accent-2)' },
-                  { label: 'Showing (filtered)', value: filtered.length, icon: '🎯', color: 'var(--accent)' },
+                  { label: 'Total Records', value: stats.total, icon: '📊', color: 'text-gray-900' },
+                  { label: 'Have Website', value: stats.withWebsite, icon: '🌐', color: 'text-gray-500' },
+                  { label: 'No Website', value: stats.withoutWebsite, icon: '🚫', color: 'text-[#00a383]' },
+                  { label: 'Showing (filtered)', value: filtered.length, icon: '🎯', color: 'text-[#6c63ff]' },
                 ].map(stat => (
                   <div key={stat.label} className="stat-card">
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
-                      <span style={{ fontSize: 22 }}>{stat.icon}</span>
-                      <span style={{ fontSize: 11, color: 'var(--text-muted)', fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase' }}>
+                    <div className="flex items-center justify-between mb-2.5">
+                      <span className="text-[22px]">{stat.icon}</span>
+                      <span className="text-[11px] text-gray-400 font-semibold tracking-wider uppercase">
                         {stat.label}
                       </span>
                     </div>
-                    <div style={{ fontSize: 32, fontWeight: 800, color: stat.color, letterSpacing: '-0.02em' }}>
+                    <div className={`text-[32px] font-extrabold tracking-tight ${stat.color}`}>
                       {stat.value.toLocaleString()}
                     </div>
                     {stat.label !== 'Total Records' && (
-                      <div style={{ marginTop: 10 }}>
+                      <div className="mt-2.5">
                         <div className="progress-bar">
                           <div
                             className="progress-bar-fill"
                             style={{ width: `${Math.round((stat.value / stats.total) * 100)}%` }}
                           />
                         </div>
-                        <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 4, textAlign: 'right' }}>
+                        <div className="text-[11px] text-gray-400 mt-1 text-right">
                           {Math.round((stat.value / stats.total) * 100)}%
                         </div>
                       </div>
@@ -386,11 +357,8 @@ export default function Home() {
 
           {/* Filters */}
           {extracted.length > 0 && (
-            <section style={{
-              display: 'flex', gap: 12, flexWrap: 'wrap', marginBottom: 24,
-              alignItems: 'center',
-            }}>
-              <div style={{ flex: '1 1 280px' }}>
+            <section className="flex gap-3 flex-wrap mb-6 items-center">
+              <div className="flex-1 min-w-[280px]">
                 <input
                   className="search-input"
                   placeholder="🔍  Search by name, phone, city…"
@@ -398,12 +366,11 @@ export default function Home() {
                   onChange={e => { setSearch(e.target.value); setPage(1); }}
                 />
               </div>
-              <div style={{ flex: '0 1 220px' }}>
+              <div className="flex-none w-[220px]">
                 <select
-                  className="search-input"
+                  className="search-input appearance-none cursor-pointer"
                   value={categoryFilter}
                   onChange={e => { setCategoryFilter(e.target.value); setPage(1); }}
-                  style={{ appearance: 'none', cursor: 'pointer' }}
                 >
                   <option value="">All Categories</option>
                   {allCategories.map(c => (
@@ -412,7 +379,7 @@ export default function Home() {
                 </select>
               </div>
               {(search || categoryFilter) && (
-                <button className="btn-secondary" style={{ whiteSpace: 'nowrap', fontSize: 13 }}
+                <button className="btn-secondary whitespace-nowrap text-[13px]"
                   onClick={() => { setSearch(''); setCategoryFilter(''); setPage(1); }}>
                   ✕ Clear filters
                 </button>
@@ -422,30 +389,26 @@ export default function Home() {
 
           {/* Results Table */}
           {extracted.length > 0 && (
-            <section className="card" style={{ overflow: 'hidden', animation: 'fadeIn 0.5s ease' }}>
-              <div style={{
-                padding: '18px 20px', borderBottom: '1px solid var(--border)',
-                display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                flexWrap: 'wrap', gap: 10,
-              }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                  <h3 style={{ fontSize: 15, fontWeight: 700 }}>
+            <section className="card overflow-hidden animate-fade-in w-full">
+              <div className="px-5 py-4 border-b border-gray-200 flex items-center justify-between flex-wrap gap-2.5">
+                <div className="flex items-center gap-3">
+                  <h3 className="text-[15px] font-bold text-gray-900">
                     Businesses Without Website
                   </h3>
                   <span className="badge badge-no-website">
                     {filtered.length} leads
                   </span>
                 </div>
-                <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>
+                <div className="text-xs text-gray-500">
                   Page {page} of {totalPages || 1}
                 </div>
               </div>
 
-              <div style={{ overflowX: 'auto' }}>
-                <table className="data-table">
+              <div className="overflow-x-auto w-full">
+                <table className="data-table w-full">
                   <thead>
                     <tr>
-                      <th style={{ width: 36, textAlign: 'center' }}>#</th>
+                      <th className="w-9 text-center">#</th>
                       {(
                         [
                           { key: 'title', label: 'Business Name' },
@@ -458,7 +421,7 @@ export default function Home() {
                         <th
                           key={col.key}
                           onClick={() => handleSort(col.key)}
-                          style={{ cursor: 'pointer', userSelect: 'none' }}
+                          className="cursor-pointer select-none"
                         >
                           {col.label} <SortIcon field={col.key} />
                         </th>
@@ -468,21 +431,18 @@ export default function Home() {
                   <tbody>
                     {paginated.length === 0 ? (
                       <tr>
-                        <td colSpan={6} style={{ textAlign: 'center', padding: '40px', color: 'var(--text-muted)' }}>
+                        <td colSpan={6} className="text-center p-10 text-gray-500">
                           No results match your search
                         </td>
                       </tr>
                     ) : (
                       paginated.map((b, i) => (
                         <tr key={i} className="animate-fade-in">
-                          <td style={{
-                            textAlign: 'center', color: 'var(--text-muted)',
-                            fontSize: 11, fontWeight: 600,
-                          }}>
+                          <td className="text-center text-gray-400 text-[11px] font-semibold">
                             {(page - 1) * PER_PAGE + i + 1}
                           </td>
                           <td>
-                            <div style={{ fontWeight: 600, color: 'var(--text-primary)', fontSize: 13 }}>
+                            <div className="font-semibold text-gray-900 text-[13px]">
                               {b.title}
                             </div>
                           </td>
@@ -490,28 +450,28 @@ export default function Home() {
                             {b.phone !== '—' ? (
                               <a
                                 href={`tel:${b.phone}`}
-                                style={{ color: 'var(--accent-2)', textDecoration: 'none', fontWeight: 500 }}
+                                className="text-[#00a383] no-underline font-medium hover:underline"
                               >
                                 📞 {b.phone}
                               </a>
                             ) : (
-                              <span style={{ color: 'var(--text-muted)' }}>—</span>
+                              <span className="text-gray-400">—</span>
                             )}
                           </td>
                           <td>
-                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
+                            <div className="flex flex-wrap gap-1">
                               {b.categories.length > 0
                                 ? b.categories.map(c => (
                                   <span key={c} className="badge badge-category">{c}</span>
                                 ))
-                                : <span style={{ color: 'var(--text-muted)' }}>—</span>
+                                : <span className="text-gray-400">—</span>
                               }
                             </div>
                           </td>
-                          <td style={{ maxWidth: 220 }}>
-                            {b.street !== '—' ? b.street : <span style={{ color: 'var(--text-muted)' }}>—</span>}
+                          <td className="max-w-[220px]">
+                            {b.street !== '—' ? b.street : <span className="text-gray-400">—</span>}
                           </td>
-                          <td>{b.city !== '—' ? b.city : <span style={{ color: 'var(--text-muted)' }}>—</span>}</td>
+                          <td>{b.city !== '—' ? b.city : <span className="text-gray-400">—</span>}</td>
                         </tr>
                       ))
                     )}
@@ -521,14 +481,9 @@ export default function Home() {
 
               {/* Pagination */}
               {totalPages > 1 && (
-                <div style={{
-                  padding: '16px 20px',
-                  borderTop: '1px solid var(--border)',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-                }}>
+                <div className="p-4 border-t border-gray-200 flex items-center justify-center gap-2">
                   <button
-                    className="btn-secondary"
-                    style={{ padding: '7px 14px', fontSize: 13 }}
+                    className="btn-secondary px-3.5 py-1.5 text-[13px]"
                     onClick={() => setPage(p => Math.max(1, p - 1))}
                     disabled={page === 1}
                   >← Prev</button>
@@ -539,21 +494,17 @@ export default function Home() {
                     else if (page <= 4) pageNum = i + 1;
                     else if (page >= totalPages - 3) pageNum = totalPages - 6 + i;
                     else pageNum = page - 3 + i;
+                    
+                    const isCurrent = pageNum === page;
                     return (
                       <button
                         key={pageNum}
                         onClick={() => setPage(pageNum)}
-                        style={{
-                          width: 36, height: 36, borderRadius: 8,
-                          border: pageNum === page ? '1px solid var(--accent)' : '1px solid var(--border)',
-                          background: pageNum === page ? 'rgba(108,99,255,0.2)' : 'transparent',
-                          color: pageNum === page ? 'var(--accent)' : 'var(--text-muted)',
-                          cursor: 'pointer',
-                          fontWeight: pageNum === page ? 700 : 400,
-                          fontSize: 13,
-                          fontFamily: 'Inter, sans-serif',
-                          transition: 'all 0.2s ease',
-                        }}
+                        className={`w-9 h-9 rounded-lg border flex items-center justify-center text-[13px] font-inter transition-all duration-200 cursor-pointer ${
+                          isCurrent 
+                            ? 'border-[#6c63ff] bg-[#6c63ff]/10 text-[#6c63ff] font-bold' 
+                            : 'border-gray-200 bg-white text-gray-500 font-normal hover:bg-gray-50'
+                        }`}
                       >
                         {pageNum}
                       </button>
@@ -561,8 +512,7 @@ export default function Home() {
                   })}
 
                   <button
-                    className="btn-secondary"
-                    style={{ padding: '7px 14px', fontSize: 13 }}
+                    className="btn-secondary px-3.5 py-1.5 text-[13px]"
                     onClick={() => setPage(p => Math.min(totalPages, p + 1))}
                     disabled={page === totalPages}
                   >Next →</button>
@@ -573,21 +523,21 @@ export default function Home() {
 
           {/* Empty state */}
           {!loading && extracted.length === 0 && !stats && (
-            <div style={{ textAlign: 'center', paddingTop: 40, color: 'var(--text-muted)' }}>
-              <div style={{ fontSize: 60, marginBottom: 16, opacity: 0.5 }}>🗂️</div>
-              <p style={{ fontSize: 15 }}>Upload a JSON file to get started</p>
-              <p style={{ fontSize: 13, marginTop: 6 }}>Supports Google Places dataset format</p>
+            <div className="text-center pt-10 text-gray-500">
+              <div className="text-[60px] mb-4 opacity-50">🗂️</div>
+              <p className="text-[15px]">Upload a JSON file to get started</p>
+              <p className="text-[13px] mt-1.5">Supports Google Places dataset format</p>
             </div>
           )}
 
           {/* Loaded but none without website */}
           {!loading && stats && extracted.length === 0 && (
-            <div style={{ textAlign: 'center', paddingTop: 40 }}>
-              <div style={{ fontSize: 60, marginBottom: 16 }}>🎉</div>
-              <p style={{ fontSize: 16, color: 'var(--accent-2)', fontWeight: 600 }}>
+            <div className="text-center pt-10">
+              <div className="text-[60px] mb-4">🎉</div>
+              <p className="text-base text-[#00a383] font-semibold">
                 All {stats.total} businesses have a website!
               </p>
-              <p style={{ fontSize: 13, color: 'var(--text-muted)', marginTop: 6 }}>
+              <p className="text-[13px] text-gray-500 mt-1.5">
                 No leads without a website were found in this dataset.
               </p>
             </div>
