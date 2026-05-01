@@ -45,11 +45,7 @@ const DownloadIcon = ({ className = "w-4 h-4" }) => (
   </svg>
 );
 
-const SearchIcon = ({ className = "w-4 h-4" }) => (
-  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-  </svg>
-);
+
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -256,7 +252,7 @@ export default function Home() {
 
   const SortIcon = ({ field }: { field: keyof ExtractedBusiness }) => {
     if (sortField !== field) return <span className="opacity-30">↕</span>;
-    return <span className="text-[#00d4aa]">{sortAsc ? '↑' : '↓'}</span>;
+    return <span className="text-black font-extrabold">{sortAsc ? '↑' : '↓'}</span>;
   };
 
   // Export CSV
@@ -305,23 +301,18 @@ export default function Home() {
     <>
       <Toast toasts={toasts} remove={removeToast} />
 
-      {/* Background blobs */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none z-0 bg-white">
-        <div className="absolute -top-[20%] -left-[10%] w-[600px] h-[600px] rounded-full bg-[radial-gradient(circle,rgba(108,99,255,0.06)_0%,transparent_70%)]" />
-        <div className="absolute -bottom-[15%] -right-[10%] w-[500px] h-[500px] rounded-full bg-[radial-gradient(circle,rgba(0,212,170,0.05)_0%,transparent_70%)]" />
-      </div>
-
+      {/* Background blobs removed */}
       {/* Full screen wrapper */}
-      <div className="relative z-10 min-h-screen px-4 md:px-8 lg:px-12 w-full bg-transparent text-black">
+      <div className="relative z-10 min-h-full py-20 px-4 md:px-8 lg:px-12 w-full bg-transparent text-black">
         {/* Header */}
-        <header className="w-full pt-8 md:pt-10 pb-6 md:pb-8 border-b border-black/10 flex flex-col sm:flex-row items-start sm:items-center justify-between flex-wrap gap-4">
+        <header className="w-full pt-8 md:pt-10 pb-6 md:pb-8 border-b border-black/10 flex flex-col sm:flex-row items-start sm:items-center justify-center mt-10 flex-wrap gap-4">
           <div>
-            <div className="flex items-center gap-3 mb-1.5">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#6c63ff] to-[#00d4aa] flex items-center justify-center text-white shadow-md">
+            <div className="flex items-center justify-center gap-3 mb-1.5">
+              <div className="w-10 h-10 rounded-xl bg-black flex items-center justify-center text-white shadow-sm">
                 <TargetIcon />
               </div>
               <h1 className="text-2xl md:text-[26px] font-extrabold tracking-tight text-black">
-                <span className="bg-gradient-to-br from-[#6c63ff] to-[#00a383] bg-clip-text text-transparent">Lead Extractor</span>
+                Lead Extractor
               </h1>
             </div>
             <p className="text-sm text-gray-500 ml-[52px]">
@@ -330,10 +321,10 @@ export default function Home() {
           </div>
           {extracted.length > 0 && (
             <div className="hidden md:flex gap-2.5 flex-wrap">
-              <button className="btn-secondary flex items-center gap-2 border-black/10 hover:border-black/30 hover:bg-black/5 text-black" onClick={exportJSON}>
+              <button className="btn-secondary flex items-center gap-2" onClick={exportJSON}>
                 <DownloadIcon className="w-4 h-4" /> JSON
               </button>
-              <button className="btn-success flex items-center gap-2 shadow-lg shadow-[#00d4aa]/20" onClick={exportCSV}>
+              <button className="btn-success flex items-center gap-2" onClick={exportCSV}>
                 <DownloadIcon className="w-4 h-4" /> CSV
               </button>
             </div>
@@ -344,7 +335,7 @@ export default function Home() {
 
           {/* Upload Zone */}
           <section
-            className={`upload-zone${dragOver ? ' drag-over' : ''} w-full p-10 md:p-14 text-center mb-10 bg-white shadow-sm border-black/10`}
+            className={`upload-zone${dragOver ? ' drag-over' : ''} w-full p-10 md:p-14 text-center mb-10 py-6 bg-white shadow-sm border-black/10`}
             onDragOver={e => { e.preventDefault(); setDragOver(true); }}
             onDragLeave={() => setDragOver(false)}
             onDrop={handleDrop}
@@ -394,10 +385,10 @@ export default function Home() {
                 {[
                   { label: 'Total Records', value: stats.total, icon: '📊', color: 'text-black' },
                   { label: 'Have Website', value: stats.withWebsite, icon: '🌐', color: 'text-gray-500' },
-                  { label: 'No Website', value: stats.withoutWebsite, icon: '🚫', color: 'text-[#00a383]' },
-                  { label: 'Filtered', value: filtered.length, icon: '🎯', color: 'text-[#6c63ff]' },
+                  { label: 'No Website', value: stats.withoutWebsite, icon: '🚫', color: 'text-black' },
+                  { label: 'Filtered', value: filtered.length, icon: '🎯', color: 'text-black' },
                 ].map(stat => (
-                  <div key={stat.label} className="stat-card px-5 md:px-6 py-6 border-black/10 bg-white shadow-sm hover:shadow-md transition-shadow">
+                  <div key={stat.label} className="stat-card">
                     <div className="flex items-center justify-between mb-3">
                       <span className="text-[22px] md:text-2xl">{stat.icon}</span>
                       <span className="text-[10px] md:text-[11px] text-gray-500 font-bold tracking-wider uppercase">
@@ -430,9 +421,8 @@ export default function Home() {
           {extracted.length > 0 && (
             <section className="flex gap-3 flex-wrap mb-8 items-center bg-gray-50 p-4 rounded-xl border border-black/5 shadow-sm w-full">
               <div className="flex-1 min-w-[240px] relative">
-                <SearchIcon className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
                 <input
-                  className="search-input pl-11 !border-black/10 !bg-white shadow-sm text-black placeholder-gray-400 focus:!border-black focus:!ring-1 focus:!ring-black"
+                  className="search-input !border-black/10 !bg-white shadow-sm text-black placeholder-gray-400 focus:!border-black focus:!ring-1 focus:!ring-black"
                   placeholder="Search by name, phone, city…"
                   value={search}
                   onChange={e => { setSearch(e.target.value); setPage(1); }}
@@ -468,7 +458,7 @@ export default function Home() {
                   <h3 className="text-lg font-bold text-black">
                     Businesses Without Website
                   </h3>
-                  <span className="badge badge-no-website bg-[#00a383]/10 text-[#00a383] border-[#00a383]/20">
+                  <span className="badge badge-no-website">
                     {filtered.length} leads
                   </span>
                 </div>
@@ -504,7 +494,7 @@ export default function Home() {
                         {b.categories.length > 0 && (
                           <div className="flex flex-wrap gap-1.5 mt-1">
                             {b.categories.slice(0, 3).map(c => (
-                              <span key={c} className="badge badge-category bg-black/5 text-black border-black/10 !text-[10px]">{c}</span>
+                              <span key={c} className="badge badge-category">{c}</span>
                             ))}
                             {b.categories.length > 3 && <span className="text-xs text-gray-500 font-bold">+{b.categories.length - 3}</span>}
                           </div>
@@ -528,7 +518,7 @@ export default function Home() {
                             target={b.phone !== '—' ? '_blank' : undefined}
                             rel={b.phone !== '—' ? 'noopener noreferrer' : undefined}
                             className={`flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-sm font-bold transition-colors ${
-                              b.phone !== '—' ? 'bg-[#25D366] text-white hover:bg-[#20bd5a]' : 'bg-gray-100 text-gray-400 pointer-events-none'
+                              b.phone !== '—' ? 'bg-black text-white hover:bg-gray-800' : 'bg-gray-100 text-gray-400 pointer-events-none'
                             }`}
                           >
                             <WhatsAppIcon className="w-4 h-4" /> WhatsApp
@@ -604,7 +594,7 @@ export default function Home() {
                                 <div className="flex flex-wrap gap-1 max-w-[200px]">
                                   {b.categories.length > 0
                                     ? b.categories.slice(0, 2).map(c => (
-                                      <span key={c} className="badge badge-category bg-black/5 text-black border-black/10">{c}</span>
+                                      <span key={c} className="badge badge-category">{c}</span>
                                     ))
                                     : <span className="text-gray-300 font-bold">—</span>
                                   }
@@ -623,7 +613,7 @@ export default function Home() {
                                       <a href={`tel:${b.phone}`} className="p-2 text-white bg-black hover:bg-gray-800 rounded-md transition-colors shadow-sm" title="Call">
                                         <PhoneIcon className="w-4 h-4" />
                                       </a>
-                                      <a href={getWhatsAppLink(b.phone)} target="_blank" rel="noopener noreferrer" className="p-2 text-white bg-[#25D366] hover:bg-[#20bd5a] rounded-md transition-colors shadow-sm" title="WhatsApp">
+                                      <a href={getWhatsAppLink(b.phone)} target="_blank" rel="noopener noreferrer" className="p-2 text-white bg-black hover:bg-gray-800 rounded-md transition-colors shadow-sm" title="WhatsApp">
                                         <WhatsAppIcon className="w-4 h-4" />
                                       </a>
                                     </>
